@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.1.5",
     "@tsparticles/all": "^3.8.1",
     "@tsparticles/engine": "^3.8.1",
+    "lucide-react": "^0.503.0",
     "motion": "^12.9.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
