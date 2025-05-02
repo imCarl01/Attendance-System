@@ -9,7 +9,7 @@ const Dashboard = () => {
         <section className='flex justify-between items-center gap-4 p-4'>
             {/* attendance stats */}
             <div>
-            <h1 className='font-semibold text-2xl'>Attendance Stats: 8/10</h1>
+            <h1 className='font-semibold text-[#00294f] text-2xl'>Attendance Stats: 8/10</h1>
 
             </div>
 

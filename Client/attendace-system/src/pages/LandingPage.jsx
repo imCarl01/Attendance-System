@@ -7,10 +7,14 @@ import NavBar from "../components/NavBar";
 import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorks";
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 const LandingPage = () => {
-  // const particlesInit = async (main) => {
-  //     await loadFull(main);
-  // };
+  const navigation = useNavigate()
+
+  const handleGetStarted = (e) => { 
+    e.preventDefault()
+    navigation('/studentdashboard')
+  }
   return (
     <div >
       <NavBar/>
@@ -36,7 +40,7 @@ const LandingPage = () => {
         </motion.p>
 
         <div className="flex gap-4">
-        <motion.button 
+        <motion.button onClick={handleGetStarted}
         whileHover={{scale:1.0}}
         whileTap={{scale:0.5}}
         className="bg-white text-[#00294f] font-bold px-4 py-2 rounded">
