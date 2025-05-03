@@ -1,32 +1,86 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import loginImage from "../assets/image/what-is-FR-removebg-preview.png";
 import { Link, useNavigate } from "react-router-dom";
+import { register } from "../../connectBackend";
 // import { loginUser } from '../../connectionToBackend';
-
+import * as faceapi from "face-api.js";
 const Register = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user");
+  const [faceDescriptor, setFaceDescriptor] = useState(null); // Assuming this is an array of numbers
   const [error, setError] = useState("");
   const [selectedValue, setSelectedValue] = useState(null);
   const navigate = useNavigate();
+  const videoRef = useRef();
 
   const handleChange = (e) => {
     setSelectedValue(e.target.value);
   };
 
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await loginUser({ email, password });
-  //     alert("Login Successful");
-  //     navigate('/');
-  //     localStorage.setItem('getToken', response.token);
-  //   } catch (error) {
-  //     console.error('Error during login:', error);
-  //     setError('Invalid email or password');
-  //   }
-  // };
+  useEffect(() => {
+    const loadModels = async () => {
+      const MODEL_URL = "/models";
+      await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+      await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+      await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+    };
+
+    const startVideo = () => {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          videoRef.current.srcObject = stream;
+        })
+        .catch((err) => console.error("Camera error:", err));
+    };
+
+    loadModels().then(startVideo);
+  }, []);
+
+  const handleScanFace = async () => {
+    const detection = await faceapi
+      .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
+      .withFaceLandmarks()
+      .withFaceDescriptor();
+
+    if (!detection) {
+      alert("No face detected. Please try again.");
+      return;
+    }
+
+    setFaceDescriptor(Array.from(detection.descriptor)); // Convert Float32Array to regular array
+    // const canvas = faceapi.createCanvasFromMedia(videoRef.current);
+    alert("Face scanned successfully!");
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    const role = selectedValue;
+    
+    if (!faceDescriptor) {
+      alert("Please scan your face before registering.");
+      return;
+    }
+    try {
+
+
+      const response = await register({
+        name,
+        email,
+        password,
+        role,
+        faceDescriptor,
+      });
+      alert("Sign up Successful");
+      navigate("/studentdashboard");
+      localStorage.setItem("getToken", response.token);
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError("Invalid email or password");
+    }
+  };
 
   return (
     <div className="bg-[#00294f] flex flex-col md:flex-row h-screen items-center justify-center px-4">
@@ -41,7 +95,7 @@ const Register = () => {
           Create an Account
         </h1>
 
-        <form className="space-y-5" action="#" onSubmit={{}}>
+        <form className="space-y-5" action="#" onSubmit={handleRegister}>
           <div>
             <label
               htmlFor="name"
@@ -101,14 +155,14 @@ const Register = () => {
             <div>
               <input
                 type="radio"
-                id="option1"
+                id="user"
                 name="options"
-                value="option1"
-                checked={selectedValue === "option1"}
+                value="user"
+                checked={selectedValue === "user"}
                 onChange={handleChange}
               />
               <label
-                htmlFor="role"
+                htmlFor="student"
                 className="block text-sm font-medium text-gray-700"
               >
                 Student
@@ -118,14 +172,14 @@ const Register = () => {
             <div>
               <input
                 type="radio"
-                id="option2"
+                id="lecturer"
                 name="options"
-                value="option2"
-                checked={selectedValue === "option2"}
+                value="lecturer"
+                checked={selectedValue === "lecturer"}
                 onChange={handleChange}
               />
               <label
-                htmlFor="role"
+                htmlFor="lecturer"
                 className="block text-sm font-medium text-gray-700"
               >
                 Lecturer
@@ -133,6 +187,21 @@ const Register = () => {
             </div>
           </div>
 
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            width="320"
+            height="240"
+            className="rounded-md border"
+          />
+          <button
+            type="button"
+            onClick={handleScanFace}
+            className="bg-green-600 text-white mt-2 px-4 py-1 rounded"
+          >
+            Scan Face
+          </button>
           <button
             type="submit"
             className="w-full bg-[#00294f] hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"

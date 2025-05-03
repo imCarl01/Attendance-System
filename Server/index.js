@@ -8,13 +8,23 @@ import cors from 'cors';
 dotenv.config();
 
 const app = express();
+
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
 mongoose.connect(MONGO_URI)
 .then(()=>console.log("MongoDB connected"))
 .catch((err)=>console.log(err));
-
+const allowedOrgins =[
+    "http://localhost:5173",
+]
+app.use(cors({
+    origin:allowedOrgins,
+    credentials:true,
+}))
+app.use(express.json())
+app.use(cookieParser())
+app.use(express.urlencoded({extended:true}))
 // routes
 app.use('/api/users',userRoutes)
 
