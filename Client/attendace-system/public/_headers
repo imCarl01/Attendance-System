@@ -1,5 +1,53 @@
-/models/*.json
+/models/age_gender_model-weights_manifest.json
   Content-Type: application/json
 
-/models/*.bin
+/models/age_gender_model-shard1
+  Content-Type: application/octet-stream
+
+/models/face_expression_model-weights_manifest.json
+  Content-Type: application/json
+
+/models/face_expression_model-shard1
+  Content-Type: application/octet-stream
+
+/models/face_landmark_68_model-weights_manifest.json
+  Content-Type: application/json
+
+/models/face_landmark_68_model-shard1
+  Content-Type: application/octet-stream
+
+/models/face_landmark_68_tiny_model-weights_manifest.json
+  Content-Type: application/json
+
+/models/face_landmark_68_tiny_model-shard1
+  Content-Type: application/octet-stream
+
+/models/face_recognition_model-weights_manifest.json
+  Content-Type: application/json
+
+/models/face_recognition_model-shard1
+  Content-Type: application/octet-stream
+
+/models/face_recognition_model-shard2
+  Content-Type: application/octet-stream
+
+/models/mtcnn_model-weights_manifest.json
+  Content-Type: application/json
+
+/models/mtcnn_model-shard1
+  Content-Type: application/octet-stream
+
+/models/ssd_mobilenetv1_model-weights_manifest.json
+  Content-Type: application/json
+
+/models/ssd_mobilenetv1_model-shard1
+  Content-Type: application/octet-stream
+
+/models/ssd_mobilenetv1_model-shard2
+  Content-Type: application/octet-stream
+
+/models/tiny_face_detector_model-weights_manifest.json
+  Content-Type: application/json
+
+/models/tiny_face_detector_model-shard1
   Content-Type: application/octet-stream
