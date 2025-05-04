@@ -115,14 +115,14 @@ const NavBar = () => {
             {!user ? (
               <>
                 <Link
-                  to="/signin"
+                  to="/login"
                   className="hover:text-blue-600"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Login
                 </Link>
                 <Link
-                  to="/signup"
+                  to="/register"
                   className="hover:text-blue-600"
                   onClick={() => setIsMenuOpen(false)}
                 >

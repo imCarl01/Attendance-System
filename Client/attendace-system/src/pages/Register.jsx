@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import loginImage from "../assets/image/what-is-FR-removebg-preview.png";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../connectBackend";
-// import { loginUser } from '../../connectionToBackend';
 import * as faceapi from "face-api.js";
+import Modal from "../components/Modal";
+
 const Register = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -13,7 +14,10 @@ const Register = () => {
   const [error, setError] = useState("");
   const [selectedValue, setSelectedValue] = useState(null);
   const navigate = useNavigate();
-  const videoRef = useRef();
+  const videoRef = useRef(); // for the face detection video stream
+  const canvasRef = useRef(null);
+  const [open, setOpen] = useState(false); // for the modal dialog
+  const [scanningStatus, setScanningStatus] = useState("idle");
 
   const handleChange = (e) => {
     setSelectedValue(e.target.value);
@@ -26,46 +30,95 @@ const Register = () => {
       await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
       await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
     };
-
-    const startVideo = () => {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-          videoRef.current.srcObject = stream;
-        })
-        .catch((err) => console.error("Camera error:", err));
-    };
-
     loadModels().then(startVideo);
   }, []);
 
+  const startVideo = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error("Camera error:", err);
+    }
+  };
+
+  const handleOpen = () => {
+    const newOpen = !open;
+    setOpen(newOpen);
+    if (newOpen) {
+      startVideo(); // Start video when modal opens
+    } else {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach((track) => track.stop()); // Stop the video stream
+        videoRef.current.srcObject = null; // Clear the video source
+      }
+    }
+  };
   const handleScanFace = async () => {
     const detection = await faceapi
       .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
       .withFaceDescriptor();
 
+      setScanningStatus("scanning");
     if (!detection) {
+      setScanningStatus("scanning");
       alert("No face detected. Please try again.");
       return;
+    }else{
+      setScanningStatus("completed");
     }
+
 
     setFaceDescriptor(Array.from(detection.descriptor)); // Convert Float32Array to regular array
     // const canvas = faceapi.createCanvasFromMedia(videoRef.current);
     alert("Face scanned successfully!");
   };
 
+  // const handlePlayAndTrackFace = async () => {
+  //   //  if(!videoRef.current) return;
+  //   const video = videoRef.current;
+  //   const canvas = canvasRef.current;
+
+  //   if (!video || !canvas) return;
+
+  //   const displaySize = { width: video.videoWidth, height: video.videoHeight };
+  //   faceapi.matchDimensions(canvas, displaySize);
+
+  //   setScanningStatus("scanning");
+
+  //   const interval = setInterval(async () => {
+  //     const detections = await faceapi.detectAllFaces(
+  //       video,
+  //       new faceapi.TinyFaceDetectorOptions()
+  //     );
+  //     // .withFaceLandmarks()
+  //     // .withFaceDescriptors();
+
+  //     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+  //     if (detections) {
+  //       const resized = faceapi.resizeResults(detections, displaySize);
+  //       faceapi.draw.drawDetections(canvas, resized);
+  //       setScanningStatus("Scanning Complete");
+  //     } else {
+  //       setScanningStatus("No face detected");
+  //     }
+  //   }, 100);
+  //   return () => clearInterval(interval);
+  // };
   const handleRegister = async (e) => {
     e.preventDefault();
     const role = selectedValue;
-    
+
     if (!faceDescriptor) {
       alert("Please scan your face before registering.");
       return;
     }
     try {
-
-
       const response = await register({
         name,
         email,
@@ -187,21 +240,50 @@ const Register = () => {
             </div>
           </div>
 
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            width="320"
-            height="240"
-            className="rounded-md border"
-          />
+          {/* Face Scan Button */}
           <button
             type="button"
-            onClick={handleScanFace}
-            className="bg-green-600 text-white mt-2 px-4 py-1 rounded"
+            onClick={handleOpen}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
           >
-            Scan Face
+            Open Face Scan
           </button>
+          <div className="relative w-fit">
+            <Modal
+              isOpen={open}
+              onClose={handleOpen}
+              onConfirm={handleScanFace}
+              title="Scan Face"
+            >
+              <video
+                ref={videoRef}
+                autoPlay
+                muted
+                width="500"
+                height="240"
+                className="rounded-md border"
+                // onPlay={handlePlayAndTrackFace}
+              />
+              {/* <canvas
+                ref={canvasRef}
+                className="absolute top-0 left-0"
+                width="320"
+                height="240"
+              /> */}
+
+              {scanningStatus === "scanning" && (
+                <p className="text-yellow-500 font-semibold mt-2">
+                  Scanning...
+                </p>
+              )}
+              {scanningStatus === "completed" && (
+                <p className="text-green-500 font-semibold mt-2">
+                  Scan Completed ✅
+                </p>
+              )}
+            </Modal>
+          </div>
+
           <button
             type="submit"
             className="w-full bg-[#00294f] hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
