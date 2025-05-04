@@ -68,6 +68,7 @@ const AttendanceTable = () => {
           </button>
         ))}
       </div>
+      
     </div>
   );
 };
