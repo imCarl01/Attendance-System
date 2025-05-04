@@ -1,2 +1,5 @@
-/models/*
-  Content-Type: application/javascript
+/models/*.json
+  Content-Type: application/json
+
+/models/*.bin
+  Content-Type: application/octet-stream
