@@ -6,6 +6,7 @@ const apiconnect = axios.create({
     withCredentials: true,
 })
 
+// User ApiSection
 export const register = async (data) => {
     try {
         const response = await apiconnect.post('/users/register', data);
@@ -25,3 +26,68 @@ export const login = async (data) => {
         throw error;
     }
 }
+export const logout = async()=>{
+    try {
+        const response = await apiconnect.post("/users/logout")
+        return response.data
+    } catch (error) {
+        console.error('Error logout admin:', error);
+        throw error;
+    }
+}
+
+export const profile = async () => {
+    try {
+        const response = await apiconnect.get('/users/profile');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        throw error;
+    }
+}
+
+// Admin Section
+
+export const registerAdmin = async(data)=>{
+    try {
+        const response = await apiconnect.post("/admin/registerAdmin",data)
+        return response.data
+    } catch (error) {
+        console.error('Error registering admin:', error);
+        throw error;
+    }
+}
+
+export const loginAdmin = async(data)=>{
+    try {
+        const response = await apiconnect.post("/admin/loginAdmin",data)
+        return response.data
+    } catch (error) {
+        console.error('Error login admin:', error);
+        throw error;
+    }
+}
+
+export const logoutAdmin = async()=>{
+    try {
+        const response = await apiconnect.post("/admin/logoutAdmin")
+        return response.data
+    } catch (error) {
+        console.error('Error logout admin:', error);
+        throw error;
+    }
+}
+
+export const adminProfile = async()=>{
+    try {
+        const response = await apiconnect.post("/admin/adminProfile")
+        return response.data
+    } catch (error) {
+        console.error('Error in getting admin:', error);
+        throw error;
+    }
+}
+
+
+
+

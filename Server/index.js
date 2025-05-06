@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import userRoutes from './Routes/user.routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-
+import adminRoutes from "./Routes/admin.routes.js"
 dotenv.config();
 
 const app = express();
@@ -17,6 +17,7 @@ mongoose.connect(MONGO_URI)
 .catch((err)=>console.log(err));
 const allowedOrgins =[
     "http://localhost:5173",
+    "https://smartattendancesystems.netlify.app/"
 ]
 app.use(cors({
     origin:allowedOrgins,
@@ -25,7 +26,10 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({extended:true}))
+
+
 // routes
+app.use("/api/admin",adminRoutes)
 app.use('/api/users',userRoutes)
 
 app.listen(PORT,()=>{

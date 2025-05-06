@@ -69,3 +69,25 @@ export const login = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+export const logout = async(req,res)=>{
+    try {
+        res.cookie("jwtToken","",{maxAge:1})
+        res.status(200).json("Logout Successfull")
+    } catch (error) {
+        console.log("Error in Logout User", error)
+        res.status(500).json("Internal Server Error")
+    }
+}
+export const profile = async (req, res) => {
+    try {
+        const existingUser = await User.findById(req.existingUser._id).select("-password");
+        if (!existingUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({ existingUser });
+    } catch (error) {
+        console.error("Profile Fetch Failed", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}

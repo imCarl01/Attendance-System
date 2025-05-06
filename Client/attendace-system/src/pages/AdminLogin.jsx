@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../../connectBackend';
 // import { loginUser } from '../../connectionToBackend';
 
-const Login = () => {
+const AdminLogi = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

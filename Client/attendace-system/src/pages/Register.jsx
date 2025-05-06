@@ -44,77 +44,65 @@ const Register = () => {
     }
   };
 
+  const stopVideo = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject;
+      const tracks = stream.getTracks();
+      tracks.forEach((track) => track.stop());
+      videoRef.current.srcObject = null;
+    }
+  };
+
   const handleOpen = () => {
     const newOpen = !open;
     setOpen(newOpen);
     if (newOpen) {
-      startVideo(); // Start video when modal opens
+      startVideo();
     } else {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject;
-        const tracks = stream.getTracks();
-        tracks.forEach((track) => track.stop()); // Stop the video stream
-        videoRef.current.srcObject = null; // Clear the video source
-      }
+      stopVideo();
     }
   };
+
   const handleScanFace = async () => {
+    setScanningStatus("scanning");
     const detection = await faceapi
       .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
       .withFaceDescriptor();
 
-      setScanningStatus("scanning");
-    if (!detection) {
-      setScanningStatus("scanning");
+    if (!detection || !detection.descriptor) {
+      setScanningStatus("idle");
       alert("No face detected. Please try again.");
       return;
-    }else{
-      setScanningStatus("completed");
     }
 
+    const descriptorArray = Array.from(detection.descriptor);
+    if(descriptorArray.length !== 128) {
+      alert("Face descriptor is not valid. Please try again.");
+      return;
+    }
 
-    setFaceDescriptor(Array.from(detection.descriptor)); // Convert Float32Array to regular array
-    // const canvas = faceapi.createCanvasFromMedia(videoRef.current);
+    setFaceDescriptor(descriptorArray); // Store the face descriptor
+    setScanningStatus("completed");
+    console.log("Scanned face descriptor:", descriptorArray);
     alert("Face scanned successfully!");
+    stopVideo(); // Stop the video stream after scanning
+
+    // setFaceDescriptor(Array.from(detection.descriptor)); // Convert Float32Array to regular array
+    // // const canvas = faceapi.createCanvasFromMedia(videoRef.current);
+    // alert("Face scanned successfully!");
   };
 
-  // const handlePlayAndTrackFace = async () => {
-  //   //  if(!videoRef.current) return;
-  //   const video = videoRef.current;
-  //   const canvas = canvasRef.current;
-
-  //   if (!video || !canvas) return;
-
-  //   const displaySize = { width: video.videoWidth, height: video.videoHeight };
-  //   faceapi.matchDimensions(canvas, displaySize);
-
-  //   setScanningStatus("scanning");
-
-  //   const interval = setInterval(async () => {
-  //     const detections = await faceapi.detectAllFaces(
-  //       video,
-  //       new faceapi.TinyFaceDetectorOptions()
-  //     );
-  //     // .withFaceLandmarks()
-  //     // .withFaceDescriptors();
-
-  //     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-  //     if (detections) {
-  //       const resized = faceapi.resizeResults(detections, displaySize);
-  //       faceapi.draw.drawDetections(canvas, resized);
-  //       setScanningStatus("Scanning Complete");
-  //     } else {
-  //       setScanningStatus("No face detected");
-  //     }
-  //   }, 100);
-  //   return () => clearInterval(interval);
-  // };
   const handleRegister = async (e) => {
     e.preventDefault();
     const role = selectedValue;
 
-    if (!faceDescriptor) {
+  if(!name || !email || !password || !selectedValue) {
+    alert("Please fill all the fields");
+    return;
+  }
+
+    if (!faceDescriptor || faceDescriptor.length !== 128) {
       alert("Please scan your face before registering.");
       return;
     }
@@ -123,14 +111,16 @@ const Register = () => {
         name,
         email,
         password,
-        role,
+        role:selectedValue,
         faceDescriptor,
       });
+      
       alert("Sign up Successful");
-      navigate("/studentdashboard");
       localStorage.setItem("getToken", response.token);
+      console.log("Registration successful:", response);
+      navigate("/studentdashboard");
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Error during register:", error);
       setError("Invalid email or password");
     }
   };

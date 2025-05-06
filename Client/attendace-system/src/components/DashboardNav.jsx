@@ -1,6 +1,7 @@
 import React from "react";
 import profile from "../assets/image/face-recognition.jpg";
 import { Bell, Menu, Settings, SunMoon } from "lucide-react";
+import { Link } from "react-router-dom";
 const DashboardNav = ({toggleMenu}) => {
   return (
     <nav className="">
@@ -20,11 +21,14 @@ const DashboardNav = ({toggleMenu}) => {
             <Bell />
           </p>
 
-          <img
+<Link to="/profile">
+
+<img
             src={profile}
             alt="Profile"
             className="rounded-full mr-3 w-10 h-10"
           />
+</Link>
           {/* <h1 className='text-xl font-semibold'>John Doe</h1> */}
         </div>
       </div>

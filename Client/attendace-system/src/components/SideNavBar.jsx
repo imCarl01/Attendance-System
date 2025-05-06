@@ -12,7 +12,6 @@ import {
   Settings,
   UserPen,
 } from "lucide-react";
-import logoSASS from "../assets/image/SASS_logo-removebg-preview.png";
 const SideNavBar = ({ isMenuOpen, setIsMenuOpen }) => {
   // const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -80,6 +79,13 @@ const SideNavBar = ({ isMenuOpen, setIsMenuOpen }) => {
           <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
             <Settings />
             Settings
+          </ul>
+        </Link>
+
+        <Link to="/studentdashboard/profile"  onClick={() => setIsMenuOpen(false)}>
+          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
+          <UserPen />
+            Profile
           </ul>
         </Link>
       </div>
