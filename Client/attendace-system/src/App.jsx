@@ -14,6 +14,14 @@ import History from './Screens/History';
 import Settings from './Screens/Settings';
 import Notification from './Screens/Notification';
 import Profile from './Screens/Profile';
+import AdminRegister from './pages/AdminRegister';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './Admin/AdminDashboard';
+import AdminHome from './Admin/AdminHome';
+import HandleClasses from './Admin/HandleClasses';
+import ManageStudent from './Admin/ManageStudent';
+import ManageLectures from './Admin/ManageLectures';
+import AdminProfile from './Admin/AdminProfile';
 
 const App = () => {
   return (
@@ -23,6 +31,8 @@ const App = () => {
       
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/registerAdmin" element={<AdminRegister />} />
+      <Route path="/loginAdmin" element={<AdminLogin />} />
 
       <Route path="/studentdashboard" element={<StudentDashboard />} >
         <Route index element={<Dashboard/>} />
@@ -34,8 +44,16 @@ const App = () => {
         <Route path="notification" element={<Notification/>} />
         <Route path="profile" element={<Profile/>} />
       </Route>
-      <Route path="/lecturerdashboard" element={<LecturerDashboard/>} />
+      
 
+      <Route path="/admindashboard" element={<AdminDashboard />} >
+        <Route index element={<AdminHome/>} />
+        <Route path="classes" element={<HandleClasses/>} />
+        <Route path="managestudent" element={<ManageStudent/>} />
+        <Route path="managelectures" element={<ManageLectures/>} />
+        <Route path="adminprofile" element={<AdminProfile/>} />
+      </Route>
+      <Route path="/lecturerdashboard" element={<LecturerDashboard/>} />
 
       <Route path="*" element={<NoPage />} />
     </Routes>

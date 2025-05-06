@@ -48,7 +48,7 @@ export const loginAdmin = async(req,res)=>{
         if(!existingAdmin){
             return res.status(400).json("Admin Unavaible")
         }
-        const isAdminPasswordCorrect = await bcrypt.compare(existingAdmin.password,password)
+        const isAdminPasswordCorrect = await bcrypt.compare(password,existingAdmin.password)
         if(!isAdminPasswordCorrect){
             return res.status(400).json("Invalid Credientials")
         }
@@ -56,7 +56,7 @@ export const loginAdmin = async(req,res)=>{
         const token = generateAdminCookie(existingAdmin,res)
         res.status(200).json({ 
             token, 
-            user: existingUser, 
+            user: existingAdmin, 
             message: "Login Successful" });
     } catch (error) {
         console.log("Error in Admin Login", error)
@@ -75,7 +75,7 @@ export const logoutAdmin = async(req,res)=>{
 }
 export const adminProfile = async(req,res)=>{
     try {
-        const existingAdmin = await Admin.findById(res.existingAdmin._id).select("-password")
+    const existingAdmin = await Admin.findById(req.existingAdmin._id).select("-password")
         if(!existingAdmin){
             return res.status(400).json("Profile Unavaiable")
         }

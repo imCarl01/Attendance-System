@@ -46,6 +46,26 @@ export const profile = async () => {
     }
 }
 
+export const getAllStudent =async(data)=>{
+    try {
+        const response = await apiconnect.get("/users/getAllStudent",data)
+        return response.data
+    } catch (error) {
+        console.error('Error fetching all students:', error);
+        throw error;
+    }
+}
+
+export const getAllLecturers =async()=>{
+    try {
+        const response = await apiconnect.get("/users/getAllLecturers")
+        return response.data
+    } catch (error) {
+        console.error('Error fetching all lecturers:', error);
+        throw error;
+    }
+}
+
 // Admin Section
 
 export const registerAdmin = async(data)=>{
@@ -80,7 +100,7 @@ export const logoutAdmin = async()=>{
 
 export const adminProfile = async()=>{
     try {
-        const response = await apiconnect.post("/admin/adminProfile")
+        const response = await apiconnect.get("/admin/adminProfile")
         return response.data
     } catch (error) {
         console.error('Error in getting admin:', error);

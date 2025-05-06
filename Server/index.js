@@ -17,7 +17,7 @@ mongoose.connect(MONGO_URI)
 .catch((err)=>console.log(err));
 const allowedOrgins =[
     "http://localhost:5173",
-    "https://smartattendancesystems.netlify.app/"
+    "https://smartattendancesystems.netlify.app"
 ]
 app.use(cors({
     origin:allowedOrgins,

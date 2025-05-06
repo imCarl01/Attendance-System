@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import loginImage from '../assets/image/what-is-FR-removebg-preview.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../../connectBackend';
+import { loginAdmin } from '../../connectBackend';
 // import { loginUser } from '../../connectionToBackend';
 
-const AdminLogi = () => {
+const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -13,9 +13,9 @@ const AdminLogi = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await login({ email, password });
+      const response = await loginAdmin({ email, password });
       alert("Login Successful");
-      navigate('/studentdashboard');
+      navigate('/admindashboard');
       localStorage.setItem('getToken', response.token);
       // console.log(response.token)
     } catch (error) {
@@ -34,7 +34,7 @@ const AdminLogi = () => {
       {/* Form Section */}
       <div className="w-full md:w-1/2 max-w-md bg-white rounded-lg shadow-lg p-8">
         <h1 className="text-2xl font-bold text-[#00294f] mb-6 text-center">
-          Welcome Back
+          Admin Login
         </h1>
 
         <form className="space-y-5" action="#" onSubmit={handleLogin}>
@@ -79,7 +79,7 @@ const AdminLogi = () => {
 
           <p className="text-sm text-gray-600 text-center">
             Don’t have an account?{' '}
-            <Link to="/register" className="text-blue-600 hover:underline">
+            <Link to="/registerAdmin" className="text-blue-600 hover:underline">
               Sign up
             </Link>
           </p>
@@ -89,4 +89,4 @@ const AdminLogi = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;

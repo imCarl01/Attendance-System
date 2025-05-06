@@ -6,7 +6,7 @@ import express from "express";
 import generateCookie from "../lib/generatecokiee.js";
 
 
-const router = express.Router()
+// const router = express.Router()
 dotenv.config();
 
 export const register = async (req, res) => {
@@ -88,6 +88,36 @@ export const profile = async (req, res) => {
         res.status(200).json({ existingUser });
     } catch (error) {
         console.error("Profile Fetch Failed", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+
+// get all students
+
+export const getAllStudents = async(req,res)=>{
+    try {
+        const existingUser =await User.find({role:"user"})
+        if(!existingUser){
+            return res.status(400).json("No User Found")
+        }
+        res.status(200).json({success:true,existingUser})
+    } catch (error) {
+        console.error("Error Fetching all Student", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+// get All Lecturers
+export const getAllLecturers = async(req,res)=>{
+    try {
+        const existingUser =await User.find({role:"lecturer"})
+        if(!existingUser){
+            return res.status(400).json("No User Found")
+        }
+        res.status(200).json({success:true,existingUser})
+    } catch (error) {
+        console.error("Error Fetching all Lecturers", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
