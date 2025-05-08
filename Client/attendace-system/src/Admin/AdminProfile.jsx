@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { adminProfile } from '../../connectBackend'
+import ProfileCard from '../components/ProfileCard'
 
 const AdminProfile = () => {
   const [existingAdmin, setExistingAdmin] = useState(null)
@@ -35,11 +36,12 @@ const AdminProfile = () => {
   },[existingAdmin])
   return (
     <div>
-      <p> </p>
-      <p> {existingAdmin?.name}</p>
-      <p> {existingAdmin?.email}</p>
-      <p> {role}</p>
-      {/* <pre>{JSON.stringify(existingUser?.faceDescriptor?.slice(0, 10), null, 2)}...</pre> */}
+      <ProfileCard 
+      user={existingAdmin?.name}
+      email={existingAdmin?.email}
+      role={role}
+      />
+      
     </div>
   )
 }
