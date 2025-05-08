@@ -44,7 +44,7 @@ const courseSchema = new mongoose.Schema({
     faculty:{
         type:String,
         required: true,
-        trim:true,  
+        enum:['Engineering', 'Science', 'Business', 'Arts', 'Medical', 'Law']
     },
     department:{
         type:String,
