@@ -14,7 +14,7 @@ export const protectRoutesAdmin = async(req,res,next)=>{
 
             next()
     } catch (error) {
-        onsole.log("Error in protectRoutes",error.message)
+        onsole.log("Error in admin protectRoutes",error.message)
         return res.status(500).json({message:error.message})
     }
 }

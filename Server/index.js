@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import adminRoutes from "./Routes/admin.routes.js"
 import courseRoutes from "./Routes/course.route.js"
+import lecturerRoutes from  "./Routes/lecturer.routes.js"
 dotenv.config();
 
 const app = express();
@@ -33,7 +34,7 @@ app.use(express.urlencoded({extended:true}))
 app.use("/api/admin",adminRoutes)
 app.use('/api/users',userRoutes)
 app.use('/api/courses',courseRoutes)
-
+app.use('/api/lecturer',lecturerRoutes)
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port http://localhost:${PORT}`);

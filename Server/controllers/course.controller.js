@@ -100,7 +100,7 @@ export const deleteSingleCourse = async(req,res)=>{
 // delete all courses
 export const deleteAllCourses = async(req,res)=>{
     try {
-        const course = await Course.findByIdAndDelete()
+        const course = await Course.deleteMany()
         res.status(200).json({
             message:"All Courses Deleted Successfully",
             course

@@ -93,20 +93,6 @@ export const profile = async (req, res) => {
 }
 
 
-// get all students
-
-export const getAllStudents = async(req,res)=>{
-    try {
-        const existingUser =await User.find({role:"user"})
-        if(!existingUser){
-            return res.status(400).json("No User Found")
-        }
-        res.status(200).json({success:true,existingUser})
-    } catch (error) {
-        console.error("Error Fetching all Student", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-}
 
 // get All Lecturers
 export const getAllLecturers = async(req,res)=>{
@@ -121,3 +107,92 @@ export const getAllLecturers = async(req,res)=>{
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
+
+// handling CRUD opration 
+
+ //i'll use register for the createUser
+
+// update user
+export const updateUserBYId = async(req,res)=>{
+    const {id} = req.params
+    try {
+        
+        const existingUser = await User.findByIdAndUpdate(id,req.body)
+        if(!existingUser){
+            return res.status(400).json("User Not Found")
+        }
+        const updatedUser = await User.findById(id)
+        res.status(200).json({
+            message:"User Updated Succefully",
+            updatedUser
+        })
+    } catch (error) {
+        console.log("Error in updating user",error);
+        res.status(500).json("Internal Server Error")
+    }
+}
+
+// get all students
+
+export const getAllStudents = async(req,res)=>{
+    try {
+        const existingUser =await User.find({role:"user"})
+        if(!existingUser){
+            return res.status(400).json("No User Found")
+        }
+        res.status(200).json({success:true,existingUser})
+    } catch (error) {
+        console.error("Error Fetching all Student", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+// get single user
+
+export const getSingleUser = async(req,res)=>{
+    const {id} = req.params
+    try {
+        const existingUser = await User.findById(id);
+        if (!existingUser) {
+          return res.status(404).json({ message: "User not found" });
+        }
+    
+        res.status(200).json({
+          message: "User retrieved successfully",
+          existingUser
+        });
+    } catch (error) {
+        console.log("Error in getting single user",error);
+        res.status(500).json("Internal Server Error")
+    }
+}
+
+// delete user
+
+export const deleteSingleUser = async(req,res)=>{
+    const {id} = req.params
+    try {
+        const existingUser = await User.findByIdAndDelete(id,req.body)
+        res.status(200).json({
+            message:"Course Deleted Successfully",
+            existingUser
+        })
+    } catch (error) {
+        console.log("Error in deleting a user",error);
+        res.status(500).json("Internal Server Error")
+    }
+}
+
+// delete all user
+export const deleteAllUser= async(req,res)=>{
+    try {
+        const existingUser = await User.deleteMany()
+        res.status(200).json({
+            message:"All Courses Deleted Successfully",
+            existingUser
+        })
+    } catch (error) {
+        console.log("Error in deleting all courses",error);
+        res.status(500).json("Internal Server Error")
+    }
+}
+

@@ -5,7 +5,7 @@ import NoPage from './pages/NoPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import StudentDashboard from './pages/StudentDashboard';
-import LecturerDashboard from './pages/LecturerDashboard';
+// import LecturerDashboard from './pages/LecturerDashboard';
 import Dashboard from './components/Dashboard';
 import ScanFace from './Screens/ScanFace';
 import Classes from './Screens/Classes';
@@ -22,6 +22,14 @@ import HandleClasses from './Admin/HandleClasses';
 import ManageStudent from './Admin/ManageStudent';
 import ManageLectures from './Admin/ManageLectures';
 import AdminProfile from './Admin/AdminProfile';
+import LecutererDashboard from './Lecuterer/LecutererDashboard';
+import LecutererHome from './Lecuterer/LecutererHome';
+import LecutererClasses from './Lecuterer/LecutererClasses';
+import LecutererTakeAttendace from './Lecuterer/LecutererTakeAttendace';
+import LecutererViewAttendace from './Lecuterer/LecutererViewAttendace';
+import LecutererProfile from './Lecuterer/LecutererProfile';
+import LecturerRegister from './pages/LecturerRegister';
+import LecturerLogin from './pages/LecturerLogin';
 
 const App = () => {
   return (
@@ -33,6 +41,9 @@ const App = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/registerAdmin" element={<AdminRegister />} />
       <Route path="/loginAdmin" element={<AdminLogin />} />
+
+      <Route path="/registerLecturer" element={<LecturerRegister />} />
+      <Route path="/loginLecturer" element={<LecturerLogin />} />
 
       <Route path="/studentdashboard" element={<StudentDashboard />} >
         <Route index element={<Dashboard/>} />
@@ -53,7 +64,14 @@ const App = () => {
         <Route path="managelectures" element={<ManageLectures/>} />
         <Route path="adminprofile" element={<AdminProfile/>} />
       </Route>
-      <Route path="/lecturerdashboard" element={<LecturerDashboard/>} />
+
+      <Route path='/lecturerdashboard' element={<LecutererDashboard/>}>
+          <Route index element={<LecutererHome/>}/>
+          <Route path="classes" element={<LecutererClasses/>} />
+        <Route path="takeAttendance" element={<LecutererTakeAttendace/>} />
+        <Route path="attendanceRecord" element={<LecutererViewAttendace/>} />
+        <Route path="profile" element={<LecutererProfile/>} />
+      </Route>
 
       <Route path="*" element={<NoPage />} />
     </Routes>

@@ -1,28 +1,159 @@
 import React, { useEffect, useState } from "react";
-import { getAllStudent } from "../../connectBackend";
+import {
+  deleteSingleUser,
+  getAllStudent,
+  updateUserBYId,
+} from "../../connectBackend";
 import { Pencil, Trash2, Plus } from "lucide-react";
-import { X, Search, Edit2 } from 'lucide-react';
+import { X, Search, Edit2 } from "lucide-react";
 
 const ManageStudent = () => {
   const [existingUser, setexistingUser] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  useEffect(() => {
-    const getAllUsers = async () => {
-      try {
-        const response = await getAllStudent();
-        if (response && Array.isArray(response.existingUser)) {
-          setexistingUser(response.existingUser);
-        } else {
-          setexistingUser([]);
-          console.warn("Unexpected response:", response);
-        }
-      } catch (error) {
-        console.error("Failed to fetch existingUser:", error);
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [user, setUser] = useState();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingUserId, setEditingUserId] = useState(null);
+
+  const getAllUsers = async () => {
+    try {
+      const response = await getAllStudent();
+      if (response && Array.isArray(response.existingUser)) {
+        setexistingUser(response.existingUser);
+        console.log("Existing user", response.existingUser);
+      } else {
         setexistingUser([]);
+        console.warn("Unexpected response:", response);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch existingUser:", error);
+      setexistingUser([]);
+    }
+  };
+
+  useEffect(() => {
     getAllUsers();
   }, []);
+
+  // handleEdit once clicked
+  const handleEditClick = (user) => {
+    console.log("Edit clicked");
+    setIsEditing(true);
+    setEditingUserId(user._id);
+    setName(user.name);
+    setEmail(user.email);
+    // setPassword(user.password);
+    setIsModalOpen(true);
+  };
+
+  const handleUpdate = async () => {
+    if (
+      !name ||
+      !email
+      // !password
+    ) {
+      alert("Please Fill in all details");
+      return;
+    }
+
+    const updatedData = {
+      name,
+      email,
+      
+    };
+    try {
+      await updateUserBYId(editingUserId, updatedData);
+      setEditingUserId(null);
+      setIsEditing(false);
+      setIsModalOpen(false);
+      setName("");
+      setEmail("");
+      getAllUsers();
+      alert("User Updated Successfully");
+    } catch (error) {
+      console.error("Update failed:", error);
+      alert("Failed to update user.");
+    }
+  };
+
+  // const handleSubmitUser = async (e) => {
+  //     e.preventDefault();
+
+  //     if (
+  //       !name ||
+  //       !email
+  //       // !password
+  //     ) {
+  //       alert("Please Fill in all details");
+  //       return null;
+  //     }
+
+  //     const userData = {
+  //       name,
+  //      email,
+  //       // password,
+
+  //     };
+
+  //     try {
+  //       if(!isEditing){
+  //         await updateUserBYId(editingUserId, userData);
+  //         alert("User updated successfully");
+  //       }
+  //       // else {
+  //       //   await createCourse(userData);
+  //       //   alert("Course created successfully");
+  //       // }
+  //       await getAllUsers();
+  //       resetForm();
+  //       // const response = await createCourse({
+  //       //   title,
+  //       //   code: courseCode,
+  //       //   lecturer: lecturer,
+  //       //   location: location,
+  //       //   time: {
+  //       //     start: startTime,
+  //       //     endtime: endTime,
+  //       //     day: courseDate.day,
+  //       //   },
+  //       //   faculty: facultyData.faculty,
+  //       //   department: departmentData.department,
+  //       // });
+
+  //       // alert("Course Created Successfully");
+  //       // console.log(response);
+
+  //       // await getTheCourse();
+  //       // // ✅ Close modal and reset form
+  //       // setIsModalOpen(false);
+  //       // setTitle("");
+  //       // setCourseCode("");
+  //       // setLecturer("");
+  //       // setLocation("");
+  //       // setStartTime("");
+  //       // setEndTime("");
+  //       // setFacultyData({ faculty: "" });
+  //       // setDepartmentData({ department: "" });
+  //       // setCourseDate({ day: "" });
+  //     } catch (error) {
+  //       console.error("Error creating course:", error);
+  //       // setError("Invalid email or password");
+  //     }
+  //   };
+
+  const handleDeleteSingleUser = async (id) => {
+    try {
+      const deleteUser = await deleteSingleUser(id);
+      if (deleteUser) {
+        setexistingUser(existingUser.filter((user) => user._id !== id));
+        alert("Course Deleted Successfully");
+      }
+    } catch (error) {
+      console.error("Error deleting course:", error);
+    }
+  };
 
   const handleEdit = (id) => {
     console.log("Edit user with ID:", id);
@@ -38,7 +169,6 @@ const ManageStudent = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       {/* Main Content */}
       <main className="container mx-auto p-4 md:p-6">
         <div className="bg-white rounded-lg shadow-md p-6">
@@ -57,13 +187,13 @@ const ManageStudent = () => {
                 <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
               </div>
 
-              <button
+              {/* <button
                 onClick={toggleModal}
                 className="flex items-center justify-center gap-2 bg-[#00294f] text-white px-4 py-2 rounded-lg hover:bg-[#003a6d] transition-colors duration-200"
               >
                 <Plus size={18} />
                 <span>Add Student</span>
-              </button>
+              </button> */}
             </div>
           </div>
 
@@ -93,44 +223,52 @@ const ManageStudent = () => {
                 </tr>
               </thead>
               <tbody>
-                {existingUser.map((user) => (
-                  <tr
-                    key={user._id}
-                    className="border-b border-gray-200 hover:bg-gray-50"
-                  >
-                    <td className="px-4 py-4 text-sm text-gray-900">
-                      {user.name}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-600">
-                      {user.email}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-600">
-                      {user.role}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-600">
-                      {user.faceDescriptor?.length || 0} values
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-600 hidden lg:table-cell">
-                      {new Date(user.createdAt).toLocaleString()}
-                    </td>
-                    <td className="px-4 py-4 text-sm">
-                      <div className="flex items-center space-x-3">
-                        <button 
-                          onClick={() => handleEdit(user._id)}
-                          className="text-blue-600 hover:text-blue-800"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(user._id)}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
+                {existingUser.length > 0 ? (
+                  existingUser.map((user) => (
+                    <tr
+                      key={user._id}
+                      className="border-b border-gray-200 hover:bg-gray-50"
+                    >
+                      <td className="px-4 py-4 text-sm text-gray-900">
+                        {user.name}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600">
+                        {user.email}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600">
+                        {user.role}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600">
+                        {user.faceDescriptor?.length || 0} values
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600 hidden lg:table-cell">
+                        {new Date(user.createdAt).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-4 text-sm">
+                        <div className="flex items-center space-x-3">
+                          <button
+                            onClick={() => handleEditClick(user)}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSingleUser(user._id)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="9" className="text-center text-gray-600 py-4">
+                      No student available
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -138,7 +276,8 @@ const ManageStudent = () => {
           {/* Pagination */}
           <div className="flex justify-between items-center mt-6">
             <p className="text-sm text-gray-600">
-              Showing {existingUser.length > 0 ? 1 : 0}-{existingUser.length} of {existingUser.length} Students
+              Showing {existingUser.length > 0 ? 1 : 0}-{existingUser.length} of{" "}
+              {existingUser.length} Students
             </p>
             <div className="flex space-x-1">
               <button className="px-3 py-1 rounded border border-gray-300 text-sm hover:bg-gray-50">
@@ -161,7 +300,7 @@ const ManageStudent = () => {
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center p-4 border-b border-gray-200">
               <h3 className="text-xl font-semibold text-[#00294f]">
-                Add New Student
+                Update Student
               </h3>
               <button
                 onClick={toggleModal}
@@ -181,6 +320,8 @@ const ManageStudent = () => {
                     type="text"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00294f]/50"
                     placeholder="Enter student name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 </div>
 
@@ -192,10 +333,12 @@ const ManageStudent = () => {
                     type="email"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00294f]/50"
                     placeholder="Enter student email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Password
                   </label>
@@ -203,22 +346,25 @@ const ManageStudent = () => {
                     type="password"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00294f]/50"
                     placeholder="Enter password"
+                    value={password}
+                    onChange={(e)=>setPassword(e.target.value)}
                   />
-                </div>
+                </div> */}
 
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Role
                   </label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00294f]/50">
-                    <option value="">Select Role</option>
-                    <option value="student">Student</option>
-                    <option value="admin">Admin</option>
-                    <option value="lecturer">Lecturer</option>
-                  </select>
-                </div>
-                
-                <div>
+                  <input
+                    type="role"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00294f]/50"
+                    placeholder="role"
+                    value={role}
+                    onChange={(e)=>setRole(e.target.value)}
+                  />
+                </div> */}
+
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Department
                   </label>
@@ -229,9 +375,9 @@ const ManageStudent = () => {
                     <option value="Economics">Economics</option>
                     <option value="Chemistry">Chemistry</option>
                   </select>
-                </div>
+                </div> */}
 
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Face Recognition
                   </label>
@@ -243,7 +389,7 @@ const ManageStudent = () => {
                       Capture Face
                     </button>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -254,18 +400,18 @@ const ManageStudent = () => {
               >
                 Cancel
               </button>
-              <button className="px-4 py-2 bg-[#00294f] text-white rounded-md hover:bg-[#003a6d] transition-colors duration-200">
-                Add Student
+              <button
+                onClick={handleUpdate}
+                className="px-4 py-2 bg-[#00294f] text-white rounded-md hover:bg-[#003a6d] transition-colors duration-200"
+              >
+                Update Student
               </button>
             </div>
           </div>
         </div>
       )}
     </div>
-   
-
   );
 };
 
 export default ManageStudent;
-

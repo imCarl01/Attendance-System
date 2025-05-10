@@ -9,7 +9,7 @@ const Profile = () => {
   const getprofile = async () => {
     try {
       const response = await profile()
-      console.log("Feteched Prodile:",response)
+      console.log("Feteched Profile:",response)
       if(response){
         setExistingUser(response.existingUser)
         localStorage.setItem("existingUser",JSON.stringify(response.existingUser))

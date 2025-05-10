@@ -20,14 +20,15 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['user',"lecturer"],
+        enum: ['user'],
         default: 'user',
     },
+    
     faceDescriptor: {
         type: [Number], // Array of float numbers from face-api.js
         validate: [arrayLimit, '{PATH} must be an array of 128 numbers'],
         required: true,
-      },
+    },
 },{
     timestamps: true,
 });

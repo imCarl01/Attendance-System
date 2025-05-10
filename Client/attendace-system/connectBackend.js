@@ -6,7 +6,87 @@ const apiconnect = axios.create({
   withCredentials: true,
 });
 
-// User ApiSection
+// Lecturer Section
+export const registerLecturer = async (data) => {
+  try {
+    const response = await apiconnect.post("/lecturer/registerLecturer", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error registering lecturer:", error);
+    throw error;
+  }
+};
+
+export const loginLecturer = async (data) => {
+  try {
+    const response = await apiconnect.post("/lecturer/loginlecturer", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error logging in user:", error);
+    throw error;
+  }
+};
+export const logoutLecturer = async () => {
+  try {
+    const response = await apiconnect.post("/lecturer/logoutlecturer");
+    return response.data;
+  } catch (error) {
+    console.error("Error logout admin:", error);
+    throw error;
+  }
+};
+
+export const profileLecturer = async () => {
+  try {
+    const response = await apiconnect.get("/lecturer/profileLecturer");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    throw error;
+  }
+};
+
+export const getAllLecturers = async (data) => {
+  try {
+    const response = await apiconnect.get("/lecturer/getAllLecturers",{params:data});
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all students:", error);
+    throw error;
+  }
+};
+
+export const getSingleLecturer = async(id)=>{
+  try {
+    const response = await apiconnect.get(`/lecturer/getSingleLecturer/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error single students:", error);
+    throw error;
+  }
+}
+export const updateLecturerBYId =async(id,data)=>{
+  try {
+    const response = await apiconnect.put(`/lecturer/updateUserBYId/${id}`,data)
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user:", error)
+    throw error;
+  }
+}
+
+export const deleteSingleLecturer = async(id)=>{
+  try {
+    const response = await apiconnect.delete(`/lecturer/deleteSingleLecturer/${id}`)
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting user:", error)
+    throw error;
+  }
+}
+
+
+//user Section 
 export const register = async (data) => {
   try {
     const response = await apiconnect.post("/users/register", data);
@@ -48,7 +128,7 @@ export const profile = async () => {
 
 export const getAllStudent = async (data) => {
   try {
-    const response = await apiconnect.get("/users/getAllStudent", data);
+    const response = await apiconnect.get("/users/getAllStudent",{params: data});
     return response.data;
   } catch (error) {
     console.error("Error fetching all students:", error);
@@ -56,15 +136,36 @@ export const getAllStudent = async (data) => {
   }
 };
 
-export const getAllLecturers = async () => {
+export const getSingleUser = async(id)=>{
   try {
-    const response = await apiconnect.get("/users/getAllLecturers");
+    const response = await apiconnect.get(`/users/getSingleUser${id}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching all lecturers:", error);
+    console.error("Error single students:", error);
     throw error;
   }
-};
+}
+export const updateUserBYId =async(id)=>{
+  try {
+    const response = await apiconnect.put(`/users/updateUserBYId/${id}`)
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user:", error)
+    throw error;
+  }
+}
+
+export const deleteSingleUser = async(id)=>{
+  try {
+    const response = await apiconnect.delete(`/users/deleteSingleUser/${id}`)
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting user:", error)
+    throw error;
+  }
+}
+
+
 
 // Admin Section
 
@@ -124,7 +225,6 @@ export const updateCourseBYId = async (id) => {
   try {
     const response = await apiconnect.put(
       `/courses/updateCourseBYId/${id}`,
-      data
     );
     return response.data;
   } catch (error) {
@@ -155,7 +255,7 @@ export const getSingleCourse = async (id) => {
 
 export const deleteSingleCourse = async (id) => {
   try {
-    const response = await apiconnect.get(`/courses/deleteSingleCourse/${id}`);
+    const response = await apiconnect.delete(`/courses/deleteSingleCourse/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error in updating a course", error);
