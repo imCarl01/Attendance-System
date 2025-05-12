@@ -209,7 +209,7 @@ const HandleClasses = () => {
                 className="flex items-center justify-center gap-2 bg-[#00294f] text-white px-4 py-2 rounded-lg hover:bg-[#003a6d] transition-colors duration-200"
               >
                 <Plus size={18} />
-                <span>Add New Class</span>
+                <span>Create New Class</span>
               </button>
             </div>
           </div>

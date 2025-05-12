@@ -14,7 +14,7 @@ export const protectRouteLecturer = async(req,res,next)=>{
 
             next()
     } catch (error) {
-        onsole.log("Error in Lecturer protectRoutes",error.message)
+        console.log("Error in Lecturer protectRoutes",error.message)
         return res.status(500).json({message:error.message})
     }
 }

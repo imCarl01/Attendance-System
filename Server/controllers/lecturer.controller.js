@@ -9,10 +9,10 @@ import generateLecturerCookie from "../lib/generateLecturerCookie.js";
 dotenv.config();
 
 export const registerLecturer = async (req, res) => {
-    const {name,email,password,role,faculty,department} = req.body;
+    const {title,name,email,password,faculty,department} = req.body;
    try {
 
-    if(!name || !email || !password || !role || !faculty || !department){
+    if(title,!name || !email || !password || !faculty || !department){
         return res.status(400).json({message:"Please fill all the fields"})
     }
 
@@ -25,10 +25,10 @@ export const registerLecturer = async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password,salt)
     const newLecturer = new Lecturer({
+        title,
         name,
         email,
         password:hashedPassword,
-        role,
         faculty,
         department,
     })

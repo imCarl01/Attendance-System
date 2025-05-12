@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 
 const lecturerSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     name: {
         type: String,
         required: true,

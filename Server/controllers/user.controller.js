@@ -81,9 +81,13 @@ export const logout = async(req,res)=>{
 }
 export const profile = async (req, res) => {
     try {
+        
+        if (!req.existingUser || !req.existingUser._id) {
+            return res.status(404).json({ message: "User not authenticated" });
+        }
         const existingUser = await User.findById(req.existingUser._id).select("-password");
-        if (!existingUser) {
-            return res.status(404).json({ message: "User not found" });
+        if(!existingUser){
+            return res.status(404).json({message:"User not found"})
         }
         res.status(200).json({ existingUser });
     } catch (error) {

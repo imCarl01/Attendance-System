@@ -7,9 +7,12 @@ dotenv.config()
 export const protectRoutes = async(req,res,next)=>{
     try {
         const token = req.cookies.jwtToken
-        if(!token) return res.status(400).json({message:"Unauthorised"})
+        if(!token) return res.status(400).json({message:"Unauthorised - No token provided"})
             const decode = jwt.verify(token,process.env.JWT_SECRET)
             const existingUser = await User.findById(decode.existingUserId).select("-password")
+            if (!existingUser) {
+                return res.status(401).json({ message: "Unauthorized - User not found" });
+            }
             req.existingUser = existingUser
 
             next()

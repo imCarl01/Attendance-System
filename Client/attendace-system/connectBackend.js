@@ -70,7 +70,7 @@ export const updateLecturerBYId =async(id,data)=>{
     const response = await apiconnect.put(`/lecturer/updateUserBYId/${id}`,data)
     return response.data;
   } catch (error) {
-    console.error("Error updating user:", error)
+    console.error("Error updating Lecturer:", error)
     throw error;
   }
 }

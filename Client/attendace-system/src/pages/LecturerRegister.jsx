@@ -26,11 +26,11 @@ const LecturerRegister = () => {
         department,
       });
       alert("Registered Successful");
-      navigate("/admindashboard");
+      navigate("/loginLecturer");
       localStorage.setItem("getToken", response.token);
       // console.log(response.token)
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Error during register:", error);
       setError("Invalid email or password");
     }
   };
@@ -164,7 +164,7 @@ const LecturerRegister = () => {
 
           <p className="text-sm text-gray-600 text-center">
             Don’t have an account?{" "}
-            <Link to="/loginAdmin" className="text-blue-600 hover:underline">
+            <Link to="/loginLecturer" className="text-blue-600 hover:underline">
               Sign up
             </Link>
           </p>
