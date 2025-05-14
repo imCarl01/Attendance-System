@@ -24,12 +24,13 @@ import ManageLectures from './Admin/ManageLectures';
 import AdminProfile from './Admin/AdminProfile';
 import LecutererDashboard from './Lecuterer/LecutererDashboard';
 import LecutererHome from './Lecuterer/LecutererHome';
-import LecutererClasses from './Lecuterer/LecutererClasses';
+// import LecutererClasses from './Lecuterer/LecutererClasses';
 import LecutererTakeAttendace from './Lecuterer/LecutererTakeAttendace';
 import LecutererViewAttendace from './Lecuterer/LecutererViewAttendace';
 import LecutererProfile from './Lecuterer/LecutererProfile';
 import LecturerRegister from './pages/LecturerRegister';
 import LecturerLogin from './pages/LecturerLogin';
+import LecturerClassSection from './Lecuterer/LecturerClassSection';
 
 const App = () => {
   return (
@@ -67,7 +68,7 @@ const App = () => {
 
       <Route path='/lecturerdashboard' element={<LecutererDashboard/>}>
           <Route index element={<LecutererHome/>}/>
-          <Route path="classes" element={<LecutererClasses/>} />
+          <Route path="classes" element={<LecturerClassSection/>} />
         <Route path="takeAttendance" element={<LecutererTakeAttendace/>} />
         <Route path="attendanceRecord" element={<LecutererViewAttendace/>} />
         <Route path="profile" element={<LecutererProfile/>} />

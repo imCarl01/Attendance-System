@@ -85,15 +85,6 @@ export const deleteSingleLecturer = async(id)=>{
   }
 }
 
-export const getLecturerCourse = async(lecturerId)=>{
-  try {
-    const response = await apiconnect.get(`/lecturer/getCourse/${lecturerId}`)
-    return response.data;
-  } catch (error) {
-    console.error("Error getting lecuter course:", error)
-    throw error;
-  }
-}
 
 
 //user Section 
@@ -272,3 +263,14 @@ export const deleteSingleCourse = async (id) => {
     throw error;
   }
 };
+
+export const getLecturerCourse = async(lecturerId)=>{
+  try {
+    const response = await apiconnect.get(`/courses/getCourse/${lecturerId}`)
+    return response.data;
+  } catch (error) {
+    console.error("Error getting lecuter course:", error)
+    throw error;
+  }
+}
+

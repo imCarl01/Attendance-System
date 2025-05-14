@@ -9,7 +9,7 @@ router.post("/createCourse", createCourse)
 router.put("/updateCourseBYId/:id", updateCourseBYId)
 router.get("/getAllCourses", getAllCourses)
 router.get("/getSingleCourse/:id", getSingleCourse)
-router.get("/getCourse/:lecturer", getLecturerCourse)
+router.get("/getCourse/:id", getLecturerCourse)
 router.delete("/deleteSingleCourse/:id", deleteSingleCourse)
 router.delete("/deleteAllCourses", deleteAllCourses)
 

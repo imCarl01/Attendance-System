@@ -41,7 +41,7 @@ const LecutererSideBarNav = ({ isMenuOpen, setIsMenuOpen }) => {
         <Link to="/lecturerdashboard/takeAttendance">
           <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
             {/* <ManageStudent /> */}
-            Take Attendance
+            Set Attendance
           </ul>
         </Link>
         <Link to="/lecturerdashboard/attendanceRecord">
@@ -112,7 +112,7 @@ const LecutererSideBarNav = ({ isMenuOpen, setIsMenuOpen }) => {
           >
             <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
               {/* <ManageStudent /> */}
-              Take Attendance
+              Set Attendance
             </ul>
           </Link>
           <Link

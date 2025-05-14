@@ -74,7 +74,7 @@ export const getAllCourses = async(req,res)=>{
 export const getSingleCourse = async(req,res)=>{
     const {id} =req.params
     try {
-        const course = await Course.findById(id); // or use: findOne({ _id: id })
+        const course = await Course.findById(id); 
         if (!course) {
           return res.status(404).json({ message: "Course not found" });
         }
@@ -122,15 +122,15 @@ export const deleteAllCourses = async(req,res)=>{
 
 // get all courses by lecturer
 export const getLecturerCourse = async (req, res) => {
-    const { lecturer } = req.params;
+    const { id } = req.params;
     try {
-        if(!mongoose.Types.ObjectId.isValid(lecturer)) {
-            return res.status(400).json({ message: "Invalid Lecturer ID" });
-        }
-        const courses = await Course.find({ lecturer }).populate("lecturer", "email");
-        if (courses.length === 0) {
-            return res.status(404).json({ message: "No courses found for this lecturer" });
-        }
+        // if(!mongoose.Types.ObjectId.isValid(lecturer:id)) {
+        //     return res.status(400).json({ message: "Invalid Lecturer ID" });
+        // }
+        const courses = await Course.find({ lecturer:id })
+        // if (courses.length === 0) {
+        //     return res.status(404).json({ message: "No courses found for this lecturer" });
+        // }
     res.status(200).json({
         message:"Course Gotten Succesfully",
         courses
