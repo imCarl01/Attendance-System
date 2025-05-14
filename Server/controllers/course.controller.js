@@ -1,9 +1,18 @@
+import mongoose from "mongoose";
 import Course from "../model/course.model.js";
-
+import Lecturer from "../model/lecturer.model.js";
 // create Courses
 export const createCourse = async(req,res)=>{
     const {title,code,lecturer,time,faculty,department,location}=req.body;
+
     try {
+        if(!mongoose.Types.ObjectId.isValid(lecturer)){
+            return res.status(400).json({message:"Invalid Lecturer ID"})
+        }
+        const lecturerExists = await Lecturer.findById(lecturer);
+        if (!lecturerExists) {
+            return res.status(400).json({message:"Lecturer not found"});
+        }
         const newCourse = await Course.create({
             title,
             code,
@@ -49,7 +58,7 @@ export const updateCourseBYId = async(req,res)=>{
 
 export const getAllCourses = async(req,res)=>{
     try {
-        const courses = await Course.find()
+        const courses = await Course.find().populate("lecturer","email")
         res.status(200).json({
             message:"All Course Gotten",
             courses
@@ -110,3 +119,26 @@ export const deleteAllCourses = async(req,res)=>{
         res.status(500).json("Internal Server Error")
     }
 }
+
+// get all courses by lecturer
+export const getLecturerCourse = async (req, res) => {
+    const { lecturer } = req.params;
+    try {
+        if(!mongoose.Types.ObjectId.isValid(lecturer)) {
+            return res.status(400).json({ message: "Invalid Lecturer ID" });
+        }
+        const courses = await Course.find({ lecturer }).populate("lecturer", "email");
+        if (courses.length === 0) {
+            return res.status(404).json({ message: "No courses found for this lecturer" });
+        }
+    res.status(200).json({
+        message:"Course Gotten Succesfully",
+        courses
+    });
+    } catch (error) {
+        console.log("Error in getting course by lecturer", error)
+        res.status(500).json("Internal Server Error")
+        
+    }
+    
+  };

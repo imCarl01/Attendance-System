@@ -160,6 +160,9 @@ const ManageLectures = () => {
             <table className="w-full border-collapse">
               <thead className="bg-gray-100">
                 <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                    ID
+                  </th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
                     Title
                   </th>
@@ -169,9 +172,9 @@ const ManageLectures = () => {
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
                     Email
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  {/* <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
                     Role
-                  </th>
+                  </th> */}
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
                     Faculty
                   </th>
@@ -190,6 +193,9 @@ const ManageLectures = () => {
                       key={lecturer._id}
                       className="border-b border-gray-200 hover:bg-gray-50"
                     >
+                         <td className="px-4 py-4 text-sm text-gray-900">
+                        {lecturer._id}
+                      </td>
                       <td className="px-4 py-4 text-sm text-gray-900">
                         {lecturer.title}
                       </td>
@@ -199,9 +205,9 @@ const ManageLectures = () => {
                       <td className="px-4 py-4 text-sm text-gray-600">
                         {lecturer.email}
                       </td>
-                      <td className="px-4 py-4 text-sm text-gray-600">
+                      {/* <td className="px-4 py-4 text-sm text-gray-600">
                         {lecturer.role}
-                      </td>
+                      </td> */}
                       <td className="px-4 py-4 text-sm text-gray-600">
                         {lecturer.faculty}
                       </td>

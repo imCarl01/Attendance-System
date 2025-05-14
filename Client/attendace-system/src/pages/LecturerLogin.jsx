@@ -33,7 +33,7 @@ const LecturerLogin = () => {
       {/* Form Section */}
       <div className="w-full md:w-1/2 max-w-md bg-white rounded-lg shadow-lg p-8">
         <h1 className="text-2xl font-bold text-[#00294f] mb-6 text-center">
-          Admin Login
+          Lecturer Login
         </h1>
 
         <form className="space-y-5" action="#" onSubmit={handleLogin}>

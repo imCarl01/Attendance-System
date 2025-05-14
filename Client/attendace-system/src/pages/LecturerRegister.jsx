@@ -45,7 +45,7 @@ const LecturerRegister = () => {
       {/* Form Section */}
       <div className="w-full md:w-[400px] bg-white rounded-lg shadow-lg p-4 md:p-5  max-h-[90vh]">
         <h1 className="text-xl md:text-2xl font-bold text-[#00294f] mb-4 text-center">
-          Register Admin
+          Register Lecturer
         </h1>
 
         <form className="space-y-3" onSubmit={handleLogin}>

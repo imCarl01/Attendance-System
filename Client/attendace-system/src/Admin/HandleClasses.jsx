@@ -48,8 +48,9 @@ const HandleClasses = () => {
     setIsEditing(true);
     setEditingCourseId(courses._id);
     setTitle(courses.title);
-    setCourseCode(courses.code);
-    setLecturer(courses.lecturer);
+    setLecturer(
+      typeof courses.lecturer === "object" ? courses.lecturer._id : courses.lecturer
+    )
     setLocation(courses.location);
     setStartTime(courses.time.start);
     setEndTime(courses.time.endtime);
@@ -86,8 +87,8 @@ const HandleClasses = () => {
       !location ||
       !startTime ||
       !endTime ||
-      !facultyData ||
-      !departmentData ||
+      !facultyData.faculty ||
+      !departmentData.department ||
       !courseDate
     ) {
       alert("Please Fill in all details");
@@ -109,44 +110,17 @@ const HandleClasses = () => {
     };
 
     try {
-      if(!isEditing){
+      if(isEditing){
         await updateCourseBYId(editingCourseId, courseData);
         alert("Course updated successfully");
       }else {
+        console.log("Sending course data:", courseData);
         await createCourse(courseData);
         alert("Course created successfully");
       }
       await getTheCourse();
       resetForm();
-      // const response = await createCourse({
-      //   title,
-      //   code: courseCode,
-      //   lecturer: lecturer,
-      //   location: location,
-      //   time: {
-      //     start: startTime,
-      //     endtime: endTime,
-      //     day: courseDate.day,
-      //   },
-      //   faculty: facultyData.faculty,
-      //   department: departmentData.department,
-      // });
-
-      // alert("Course Created Successfully");
-      // console.log(response);
-
-      // await getTheCourse();
-      // // ✅ Close modal and reset form
-      // setIsModalOpen(false);
-      // setTitle("");
-      // setCourseCode("");
-      // setLecturer("");
-      // setLocation("");
-      // setStartTime("");
-      // setEndTime("");
-      // setFacultyData({ faculty: "" });
-      // setDepartmentData({ department: "" });
-      // setCourseDate({ day: "" });
+    
     } catch (error) {
       console.error("Error creating course:", error);
       // setError("Invalid email or password");
@@ -262,8 +236,8 @@ const HandleClasses = () => {
                         {courses.code}
                       </td>
                       <td className="px-4 py-4 text-sm text-gray-600">
-                        {courses.lecturer}
-                      </td>
+  {typeof courses.lecturer === "object" ? courses.lecturer.name : courses.lecturer}
+</td>
                       <td className="px-4 py-4 text-sm text-gray-600">
                         {courses.time.day}
                       </td>
@@ -367,12 +341,12 @@ const HandleClasses = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Lecturer
+                      Lecturer ID
                     </label>
                     <input
                       type="text"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00294f]/50"
-                      placeholder="Enter lecturer name"
+                      placeholder="Enter lecturer ID"
                       value={lecturer}
                       onChange={(e) => setLecturer(e.target.value)}
                     />
@@ -456,6 +430,9 @@ const HandleClasses = () => {
                       <option value="Computer Science">Computer Science</option>
                       <option value="Electrical Engineering">
                         Electrical Engineering
+                      </option>
+                      <option value="Computer Engineering">
+                        Computer Engineering
                       </option>
                       <option value="Economics">Economics</option>
                       <option value="Chemistry">Chemistry</option>

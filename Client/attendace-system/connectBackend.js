@@ -2,7 +2,7 @@ import axios from "axios";
 
 const apiconnect = axios.create({
   baseURL: "http://localhost:5000/api",
-  timeout: 1000,
+  timeout: 10000, // 10 seconds timeout
   withCredentials: true,
 });
 
@@ -81,6 +81,16 @@ export const deleteSingleLecturer = async(id)=>{
     return response.data;
   } catch (error) {
     console.error("Error deleting user:", error)
+    throw error;
+  }
+}
+
+export const getLecturerCourse = async(lecturerId)=>{
+  try {
+    const response = await apiconnect.get(`/lecturer/getCourse/${lecturerId}`)
+    return response.data;
+  } catch (error) {
+    console.error("Error getting lecuter course:", error)
     throw error;
   }
 }
@@ -224,7 +234,7 @@ export const createCourse = async (data) => {
 export const updateCourseBYId = async (id) => {
   try {
     const response = await apiconnect.put(
-      `/courses/updateCourseBYId/${id}`,
+      `/courses/updateCourseBYId/${id}`
     );
     return response.data;
   } catch (error) {
