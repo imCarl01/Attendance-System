@@ -51,44 +51,26 @@ export const generateQRCode = async (req, res) => {
 export const markAttendance = async (req, res) => {
   try {
     const { code, studentId } = req.body;
-
-    // const decoded = decodeCode(code);
-    // Verify token
     const decoded = jwt.verify(code, process.env.QR_SECRET);
 
     const session = await AttendanceSession.findById(decoded.sessionId);
-    if (!session || !session.isActive) {
-      return res.status(400).json({ message: "Invalid or inactive session" });
-    }
+    if (!session || !session.isActive) return res.status(400).json({ message: "Invalid or inactive session" });
 
-    // Check expiry
-    if (session.expiresAt < new Date()) {
-      return res.status(401).json({ message: "QR code expired" });
-    }
+    if (session.expiresAt < new Date()) return res.status(401).json({ message: "QR code expired" });
 
     const user = await User.findById(studentId);
     if (!user) return res.status(404).json({ message: "User not found" });
-
-    // Checking if already marked in this session
-    // const alreadyMarked = await Attendance.findOne({
-    //   user: user._id,
-    //   courseCode: decoded.courseCode,
-    //   date: { $gte: startOfToday(), $lte: endOfToday() }
-    // });
 
     const alreadyMarked = await Attendance.findOne({
       student: user._id,
       sessionId: session._id,
     });
 
-    if (alreadyMarked) {
-      return res.status(409).json({ message: "Attendance already marked" });
-    }
+    if (alreadyMarked) return res.status(409).json({ message: "Attendance already marked" });
 
-    // set new attendace
     const newAttendance = new Attendance({
       student: user._id,
-      courseCode: decoded.courseId, // store actual courseId instead of code if you prefer
+      courseCode: decoded.courseId,
       sessionId: session._id,
     });
 
@@ -96,10 +78,8 @@ export const markAttendance = async (req, res) => {
 
     res.status(200).json({ message: "Attendance marked successfully" });
   } catch (err) {
-    console.error(err);
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({ message: "QR code expired" });
-    }
+    console.error(err); // <-- this will print the exact error
+    if (err.name === "TokenExpiredError") return res.status(401).json({ message: "QR code expired" });
     res.status(500).json({ message: "Server error" });
   }
 };
