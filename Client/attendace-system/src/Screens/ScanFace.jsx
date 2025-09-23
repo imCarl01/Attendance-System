@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 import scanAnimation from "../assets/image/Animation - 1746189382518.gif";
 import { markAttendance } from "../../connectBackend";
 
@@ -11,8 +11,8 @@ const ScanFace = () => {
   const [code, setCode] = useState("");
   const [isLockedOut, setIsLockedOut] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [matchedUser, setMatchedUser] = useState(null);
   const lockoutTimer = useRef(null);
+  const qrCodeScanner = useRef(null);
 
   useEffect(() => {
     const loadModels = async () => {
@@ -22,32 +22,6 @@ const ScanFace = () => {
       await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
     };
     loadModels();
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) triggerLockout();
-    };
-
-    const handlePrintScreen = (e) => {
-      e.preventDefault();
-      triggerLockout();
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    document.addEventListener("keyup", (e) => {
-      if (e.key === "PrintScreen") handlePrintScreen(e);
-    });
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    const disableContextMenu = (e) => e.preventDefault();
-    document.addEventListener("contextmenu", disableContextMenu);
-    return () => {
-      document.removeEventListener("contextmenu", disableContextMenu);
-    };
   }, []);
 
   const triggerLockout = () => {
@@ -57,34 +31,49 @@ const ScanFace = () => {
     }, 2 * 60 * 1000); // 2 minutes for testing
   };
 
-  // ✅ QR Scanner → force BACK camera
-  const startQrScanner = () => {
+  // ✅ Force back camera for QR code
+  const startQrScanner = async () => {
     if (isLockedOut) return;
 
-    const qrScanner = new Html5QrcodeScanner("qr-reader", {
-      fps: 10,
-      qrbox: 250,
-      facingMode: { exact: "environment" }, // back camera
-    });
+    try {
+      const devices = await Html5Qrcode.getCameras();
+      if (devices && devices.length) {
+        // find back camera
+        const backCamera = devices.find((d) =>
+          d.label.toLowerCase().includes("back")
+        );
 
-    qrScanner.render(
-      (decodedText) => {
-        setCode(decodedText);
-        qrScanner.clear();
-        alert("QR Code scanned. Now scan your face.");
-      },
-      (error) => {
-        console.warn(error);
+        const cameraId = backCamera ? backCamera.id : devices[0].id;
+
+        qrCodeScanner.current = new Html5Qrcode("qr-reader");
+
+        qrCodeScanner.current.start(
+          cameraId,
+          {
+            fps: 10,
+            qrbox: 250,
+          },
+          (decodedText) => {
+            setCode(decodedText);
+            qrCodeScanner.current.stop();
+            alert("QR Code scanned. Now scan your face.");
+          },
+          (errorMessage) => {
+            console.warn(errorMessage);
+          }
+        );
       }
-    );
+    } catch (err) {
+      console.error("QR Scanner error:", err);
+    }
   };
 
-  // ✅ Face Scan → force FRONT camera
+  // ✅ Force front camera for face scan
   const startVideo = () => {
     if (!code || isLockedOut) return;
     setScanning(true);
     navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: "user" } }) // front camera
+      .getUserMedia({ video: { facingMode: "user" } })
       .then((stream) => {
         videoRef.current.srcObject = stream;
       })
@@ -120,7 +109,7 @@ const ScanFace = () => {
         }
         setTimeout(() => {
           setIsModalOpen(false);
-        }, 3000); // Auto-close after 3 seconds
+        }, 3000);
       }
     }, 500);
     return () => clearInterval(interval);
@@ -132,65 +121,47 @@ const ScanFace = () => {
         <h1 className="text-3xl font-bold text-[#00294f]">Mark Attendance</h1>
         <p>Please scan QR code, then align face with frame.</p>
 
-        {isLockedOut ? (
-          <div className="text-red-600 font-bold">
-            You have been locked out for 2 minutes due to suspicious activity.
+        {!code ? (
+          <div id="qr-reader" className="w-[300px]" />
+        ) : scanning ? (
+          <div className="relative">
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              onPlay={handlePlay}
+              className="rounded-lg w-[300px] h-auto"
+            />
+            <canvas
+              ref={canvasRef}
+              className="absolute top-0 left-0 w-[300px] h-auto"
+            />
           </div>
         ) : (
-          <>
-            {!code ? (
-              <div id="qr-reader" className="w-[300px]" />
-            ) : scanning ? (
-              <div className="relative">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  muted
-                  onPlay={handlePlay}
-                  className="rounded-lg w-[300px] h-auto"
-                />
-                <canvas
-                  ref={canvasRef}
-                  className="absolute top-0 left-0 w-[300px] h-auto"
-                />
-              </div>
-            ) : (
-              <img
-                src={scanAnimation}
-                alt="Scan Animation"
-                className="w-70 h-70 object-cover"
-              />
-            )}
-            <input
-              type="text"
-              value={code}
-              readOnly
-              hidden
-              onCopy={(e) => {
-                e.preventDefault();
-                triggerLockout();
-              }}
-            />
-            {!code ? (
-              <button
-                className="bg-blue-600 text-white px-4 py-2 rounded"
-                onClick={startQrScanner}
-              >
-                Start QR Scan
-              </button>
-            ) : (
-              <button
-                className="bg-[#00294f] text-[#fff] font-bold px-4 py-2 rounded w-70"
-                onClick={startVideo}
-              >
-                {scanning ? "Scanning..." : "Scan Face"}
-              </button>
-            )}
-          </>
+          <img
+            src={scanAnimation}
+            alt="Scan Animation"
+            className="w-70 h-70 object-cover"
+          />
+        )}
+
+        {!code ? (
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+            onClick={startQrScanner}
+          >
+            Start QR Scan
+          </button>
+        ) : (
+          <button
+            className="bg-[#00294f] text-[#fff] font-bold px-4 py-2 rounded w-70"
+            onClick={startVideo}
+          >
+            {scanning ? "Scanning..." : "Scan Face"}
+          </button>
         )}
       </section>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-40 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm">
