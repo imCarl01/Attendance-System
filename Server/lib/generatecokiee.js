@@ -17,7 +17,8 @@ const generateCookie = (existingUser, res) => {
     res.cookie("jwtToken", token, {
         httpOnly: true,
         maxAge: 15 * 24 * 60 * 60 * 1000,
-        sameSite: "strict",
+         secure: true,          // required for HTTPS (Netlify + Render)
+  sameSite: "none"
     });
 
     return token;
