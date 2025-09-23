@@ -32,6 +32,9 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended:true}))
 
 
+app.get("/", (req, res) => {
+  res.send("✅ Attendance API is running!");
+});
 // routes
 app.use("/api/admin",adminRoutes)
 app.use('/api/users',userRoutes)
@@ -42,6 +45,7 @@ app.use('/api/attendace',attendanceRoutes)
 // app.listen(PORT,()=>{
 //     console.log(`Server is running on port http://localhost:${PORT}`);
 // })
+
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`); // production
