@@ -289,19 +289,15 @@ export const getLecturerCourse = async(lecturerId)=>{
 //     throw error;
 //   }
 // }
-export const markAttendance = async ({ code, studentId }) => {
+export const markAttendance = async (data) => {
   try {
-    const response = await apiconnect.post("/attendace/markAttendance", {
-      code,
-      studentId,
-    });
+    const response = await apiconnect.post("/attendance/markAttendance", data);
     return response.data;
   } catch (error) {
-    console.error("Error in marking attendance:", error);
-    if (error.response) throw error.response.data;
+    console.error("Error in marking attendance", error);
     throw error;
   }
-};
+}
 
 
 // export const generateQRCode = async (data) => {

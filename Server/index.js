@@ -47,7 +47,8 @@ app.use("/api/admin",adminRoutes)
 app.use('/api/users',userRoutes)
 app.use('/api/courses',courseRoutes)
 app.use('/api/lecturer',lecturerRoutes)
-app.use('/api/attendace',attendanceRoutes)
+app.use('/api/attendance', attendanceRoutes);
+
 
 // app.listen(PORT,()=>{
 //     console.log(`Server is running on port http://localhost:${PORT}`);
