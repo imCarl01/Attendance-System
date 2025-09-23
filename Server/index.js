@@ -18,15 +18,22 @@ const MONGO_URI = process.env.MONGO_URI;
 mongoose.connect(MONGO_URI)
 .then(()=>console.log("MongoDB connected"))
 .catch((err)=>console.log(err));
-const allowedOrgins =[
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "https://smartattendancesystems.netlify.app"
-]
+// const allowedOrgins =[
+//     "http://localhost:5173",
+//     "http://localhost:5174",
+//     "https://smartattendancesystems.netlify.app"
+// ]
+// app.use(cors({
+//     origin:allowedOrgins,
+//     credentials:true,
+// }))
+
 app.use(cors({
-    origin:allowedOrgins,
-    credentials:true,
-}))
+  origin: (origin, callback) => {
+    callback(null, true); // allow all origins temporarily
+  },
+  credentials: true,
+}));
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({extended:true}))

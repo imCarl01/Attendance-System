@@ -141,7 +141,7 @@ export const getAllStudent = async (data) => {
 
 export const getSingleUser = async(id)=>{
   try {
-    const response = await apiconnect.get(`/users/getSingleUser${id}`);
+    const response = await apiconnect.get(`/users/getSingleUser/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error single students:", error);
