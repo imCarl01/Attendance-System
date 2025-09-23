@@ -7,6 +7,7 @@ import cors from 'cors';
 import adminRoutes from "./Routes/admin.routes.js"
 import courseRoutes from "./Routes/course.route.js"
 import lecturerRoutes from  "./Routes/lecturer.routes.js"
+import attendanceRoutes from "./Routes/attendace.routes.js"
 dotenv.config();
 
 const app = express();
@@ -19,6 +20,7 @@ mongoose.connect(MONGO_URI)
 .catch((err)=>console.log(err));
 const allowedOrgins =[
     "http://localhost:5173",
+    "http://localhost:5174",
     "https://smartattendancesystems.netlify.app"
 ]
 app.use(cors({
@@ -35,6 +37,7 @@ app.use("/api/admin",adminRoutes)
 app.use('/api/users',userRoutes)
 app.use('/api/courses',courseRoutes)
 app.use('/api/lecturer',lecturerRoutes)
+app.use('/api/attendace',attendanceRoutes)
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port http://localhost:${PORT}`);

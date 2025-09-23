@@ -17,7 +17,7 @@ export const protectRoutes = async(req,res,next)=>{
 
             next()
     } catch (error) {
-        onsole.log("Error in user protectRoutes",error.message)
+        console.log("Error in user protectRoutes",error.message)
         return res.status(500).json({message:error.message})
     }
 }

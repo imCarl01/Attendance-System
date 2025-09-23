@@ -1,66 +1,64 @@
-import { useState, useRef } from "react";
-import * as htmlToImage from "html-to-image";
-import QRCode from "react-qr-code"; // Make sure this is installed: npm i react-qr-code
+import React, { useState, useEffect } from "react";
+import { generateQRCode } from "../../connectBackend";
+import { QRCodeCanvas } from "qrcode.react";
 
-const QrCodeGenerator = () => {
-  const [url, setUrl] = useState("");
-  const [qrIsVisible, setQrIsVisible] = useState(false);
-  const qrCodeRef = useRef(null);
+const QrCodeGenerator = ({ course, lecturerId }) => {
+  const [qrCode, setQrCode] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleQrCodeGenerator = () => {
-    if (!url) return;
-    setQrIsVisible(true);
+  console.log("QrCodeGenerator props:", course, lecturerId);
+
+  const handleGenerateQR = async () => {
+    try {
+      setLoading(true);
+      setQrCode("");
+
+      const payload = {
+  courseId: course?._id,       // just the course ID
+  lecturerId: lecturerId,      // just the lecturer ID
+};
+
+
+      console.log("Sending payload:", payload);
+
+      const response = await generateQRCode(payload);
+      setQrCode(response.code);
+    } catch (error) {
+      console.error("Error generating QR:", error);
+      alert("Failed to generate QR Code");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const downloadQRCode = () => {
-    htmlToImage
-      .toPng(qrCodeRef.current)
-      .then((dataUrl) => {
-        const link = document.createElement("a");
-        link.href = dataUrl;
-        link.download = "qr-code.png";
-        link.click();
-      })
-      .catch((error) => {
-        console.error("Error generating QR code:", error);
-      });
-  };
+  useEffect(() => {
+    let interval;
+    if (qrCode) {
+      interval = setInterval(() => {
+        handleGenerateQR();
+      }, 30000);
+    }
+    return () => clearInterval(interval);
+  }, [qrCode]);
 
   return (
-    <div className="flex flex-col bg-white">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Attendace Code Generator</h1>
+    <div className="p-4 flex flex-col items-center gap-4">
+      <h2 className="text-xl font-bold">QR Code Generator</h2>
 
-      <div className="w-full max-w-md bg-white shadow-md rounded-xl p-6 space-y-6" ref={qrCodeRef}>
-        <div className="space-y-3">
-          <input
-            type="text"
-            placeholder="Enter a URL"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-          />
-          <button
-            onClick={handleQrCodeGenerator}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition duration-200"
-          >
-            Generate Code
-          </button>
+      <button
+        onClick={handleGenerateQR}
+        disabled={loading}
+        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+      >
+        {loading ? "Generating..." : "Generate QR"}
+      </button>
+
+      {qrCode && (
+        <div className="mt-4">
+          <QRCodeCanvas value={qrCode} size={256} />
+          <p className="text-sm text-gray-500 mt-2">Valid for 30 seconds</p>
         </div>
-
-        {qrIsVisible && (
-          <div className="flex flex-col items-center gap-4 mt-6">
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <QRCode value={url} size={256} />
-            </div>
-            <button
-              onClick={downloadQRCode}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition duration-200"
-            >
-              Download Code
-            </button>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 };

@@ -54,7 +54,7 @@ const NavBar = () => {
           to="/"
           className="text-2xl font-bold  hidden md:block"
         >
-          SASS
+          SAS
         </Link>
 
         {/* Desktop Links */}
@@ -100,7 +100,7 @@ const NavBar = () => {
         <div className="p-6 space-y-4 text-gray-700">
           <div className="flex items-center justify-between mb-4">
             <Link to="/" className="text-2xl font-bold">
-              SASS
+              SAS
             </Link>
             <Link
               className="block hover:text-blue-600"

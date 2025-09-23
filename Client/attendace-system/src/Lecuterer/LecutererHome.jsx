@@ -39,7 +39,7 @@ const LecutererHome = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
         <AdminCard title="Total Classes" count="10" />
-        <AdminCard title="Total Students" count="100" />
+        <AdminCard title="Total Students" count="1" />
         <AdminCard title="Today's Attendance" count="4" />
       </div>
 

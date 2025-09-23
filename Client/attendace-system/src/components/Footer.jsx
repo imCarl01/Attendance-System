@@ -8,7 +8,7 @@ const Footer = () => {
 
         {/* Left Section */}
         <div className="text-center md:text-left">
-          <p className="font-semibold">© {new Date().getFullYear()} SASS</p>
+          <p className="font-semibold">© {new Date().getFullYear()} SAS</p>
           {/* <p className="text-sm text-gray-400">Final Year Project – [Your University Name]</p> */}
         </div>
 

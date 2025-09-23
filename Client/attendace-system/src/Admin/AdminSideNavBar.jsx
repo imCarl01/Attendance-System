@@ -21,8 +21,8 @@ const AdminSideNavBar = ({ isMenuOpen, setIsMenuOpen }) => {
       {/* desktop side nav */}
       <div className="hidden p-10 bg-[#ffffff] w-60 h-screen md:block lg:block">
         <Link className="flex items-center text-left space-y-2 mb-10">
-          {/* <img src={logoSASS} alt="SASS Logo" className="w-16" /> */}
-          <h1 className="text-5xl font-semibold text-[#00294f]">SASS Admin</h1>
+          {/* <img src={logoSAS} alt="SAS Logo" className="w-16" /> */}
+          <h1 className="text-5xl font-semibold text-[#00294f]">SAS Admin</h1>
         </Link>
 
         <Link to="/admindashboard">
@@ -77,9 +77,9 @@ const AdminSideNavBar = ({ isMenuOpen, setIsMenuOpen }) => {
         <div className="flex flex-col items-left justify-between ">
           <div>
             <Link className="flex items-center text-left space-y-2 mb-10">
-              {/* <img src={logoSASS} alt="SASS Logo" className="w-16" /> */}
+              {/* <img src={logoSAS} alt="SAS Logo" className="w-16" /> */}
               <h1 className="text-5xl font-semibold text-[#00294f]">
-                SASS Admin
+                SAS Admin
               </h1>
             </Link>
             {/* <Link

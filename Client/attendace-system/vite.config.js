@@ -7,4 +7,8 @@ export default defineConfig({
     chunkSizeWarningLimit: 1600,
   },
   plugins: [react(),tailwindcss()],
+      server: {
+    host: true,
+    port: 5173, 
+  },
 })

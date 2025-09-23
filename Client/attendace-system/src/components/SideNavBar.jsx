@@ -33,8 +33,8 @@ const SideNavBar = ({ isMenuOpen, setIsMenuOpen }) => {
       {/* desktop side nav */}
       <div className="hidden p-10 bg-[#ffffff] w-60 h-screen md:block lg:block">
         <Link className="flex items-center text-left space-y-2 mb-10">
-          {/* <img src={logoSASS} alt="SASS Logo" className="w-16" /> */}
-          <h1 className="text-5xl font-semibold text-[#00294f]">SASS</h1>
+          {/* <img src={logoSAS} alt="SAS Logo" className="w-16" /> */}
+          <h1 className="text-5xl font-semibold text-[#00294f]">SAS Student</h1>
         </Link>
 
         <Link to="/studentdashboard">
@@ -62,32 +62,22 @@ const SideNavBar = ({ isMenuOpen, setIsMenuOpen }) => {
             Status
           </ul>
         </Link>
-        <Link to="/studentdashboard/history">
-          {" "}
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-            <History />
-            History
-          </ul>
-        </Link>
-        <Link to="/studentdashboard/notification">
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-            <Bell />
-            Nofication
-          </ul>
-        </Link>
-        <Link to="/studentdashboard/settings">
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-            <Settings />
-            Settings
-          </ul>
-        </Link>
 
-        <Link to="/studentdashboard/profile"  onClick={() => setIsMenuOpen(false)}>
+        <Link
+          to="/studentdashboard/profile"
+          onClick={() => setIsMenuOpen(false)}
+        >
           <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-          <UserPen />
+            <UserPen />
             Profile
           </ul>
         </Link>
+
+        <div>
+          <Link className="bg-[#00294f] text-[#fff] font-bold flex justify-center items-center px-4 py-2 rounded">
+            Log out
+          </Link>
+        </div>
       </div>
 
       {/* mobile side nav */}
@@ -98,75 +88,63 @@ const SideNavBar = ({ isMenuOpen, setIsMenuOpen }) => {
       >
         <div className="flex flex-col items-left justify-between ">
           <div>
-          <Link className="flex items-center text-left space-y-2 mb-10">
-          {/* <img src={logoSASS} alt="SASS Logo" className="w-16" /> */}
-          <h1 className="text-5xl font-semibold text-[#00294f]">SASS</h1>
-        </Link>
-          {/* <Link
+            <Link className="flex items-center text-left space-y-2 mb-10">
+              {/* <img src={logoSAS} alt="SAS Logo" className="w-16" /> */}
+              <h1 className="text-5xl font-semibold text-[#00294f]">
+                SAS Student
+              </h1>
+            </Link>
+            {/* <Link
             className="block hover:text-blue-600"
             onClick={() => setIsMenuOpen(false)}
           >
             <p className="text-4xl ">X</p>
           </Link> */}
+          </div>
+
+          <Link to="/studentdashboard" onClick={() => setIsMenuOpen(false)}>
+            <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
+              {" "}
+              <LayoutDashboard />
+              Dashboard
+            </ul>
+          </Link>
+          <Link
+            to="/studentdashboard/scan"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
+              <Scan />
+              Mark Attandace
+            </ul>
+          </Link>
+          <Link
+            to="/studentdashboard/classes"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
+              <School />
+              Classes
+            </ul>
+          </Link>
+
+
+          <Link
+            to="/studentdashboard/profile"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
+              <UserPen />
+              Profile
+            </ul>
+          </Link>
         </div>
 
-        <Link to="/studentdashboard"  onClick={() => setIsMenuOpen(false)}>
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-            {" "}
-            <LayoutDashboard />
-            Dashboard
-          </ul>
-        </Link>
-        <Link to="/studentdashboard/scan"  onClick={() => setIsMenuOpen(false)}>
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-            <Scan />
-            Scan Face
-          </ul>
-        </Link>
-        <Link to="/studentdashboard/classes"  onClick={() => setIsMenuOpen(false)}>
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-            <School />
-            Classes
-          </ul>
-        </Link>
-        <Link to="/studentdashboard/status"  onClick={() => setIsMenuOpen(false)}>
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-            <ChartBarBig />
-            Status
-          </ul>
-        </Link>
-        <Link to="/studentdashboard/history"  onClick={() => setIsMenuOpen(false)}>
-          {" "}
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-            <History />
-            History
-          </ul>
-        </Link>
-        <Link to="/studentdashboard/notification"  onClick={() => setIsMenuOpen(false)}>
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-            <Bell />
-            Nofication
-          </ul>
-        </Link>
-        <Link to="/studentdashboard/settings"  onClick={() => setIsMenuOpen(false)}>
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-            <Settings />
-            Settings
-          </ul>
-        </Link>
-
-        <Link to="/studentdashboard/profile"  onClick={() => setIsMenuOpen(false)}>
-          <ul className="mb-8 text-1xl text-[#00294f] flex gap-2">
-          <UserPen />
-            Profile
-          </ul>
-        </Link>
-          </div>
-     
-<div>
-<Link  className="bg-[#00294f] text-[#fff] font-bold flex justify-center items-center px-4 py-2 rounded">Log out</Link>
-</div>
-                    
+        <div>
+          <Link className="bg-[#00294f] text-[#fff] font-bold flex justify-center items-center px-4 py-2 rounded">
+            Log out
+          </Link>
+        </div>
       </div>
     </div>
   );

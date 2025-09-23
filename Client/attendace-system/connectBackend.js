@@ -274,3 +274,56 @@ export const getLecturerCourse = async(lecturerId)=>{
   }
 }
 
+
+
+// attendance section
+
+export const markAttendance = async (data) => {
+  try {
+    const response = await apiconnect.post("/attendace/markAttendance", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in marking attendance", error);
+    throw error;
+  }
+}
+
+// export const generateQRCode = async (data) => {
+//   try {
+//     const response = await apiconnect.post("/attendace/generateQR", data); 
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error in generating QR code", error);
+//     throw error;
+//   }
+// };
+
+// export const generateQRCode = async (data) => {
+//   try {
+//     const response = await apiconnect.post(
+//       "/attendace/generateQR",
+//       data, // must pass JSON
+//       {
+//         headers: {
+//           "Content-Type": "application/json", // ✅ force JSON
+//         },
+//       }
+//     );
+   
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error in generating QR code", error);
+//     throw error;
+//   }
+// };
+
+export const generateQRCode = async (data) => {
+  try {
+    const response = await apiconnect.post("/attendace/generateQR", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in generating QR code", error);
+    throw error;
+  }
+};
+
