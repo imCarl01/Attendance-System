@@ -14,14 +14,20 @@ const QrCodeGenerator = ({ course, lecturerId }) => {
       setQrCode("");
 
       const payload = {
-  courseId: course?._id,       // just the course ID
-  lecturerId: lecturerId,      // just the lecturer ID
-};
+        courseId: course?._id,
+        lecturerId: lecturerId,
+      };
 
-
-      console.log("Sending payload:", payload);
+      console.log("Sending payload for QR generation:", payload);
 
       const response = await generateQRCode(payload);
+
+      console.log("QR code response from backend:", response);
+
+      // Save sessionId in localStorage for lecturer view
+      localStorage.setItem("currentSessionId", response.sessionId);
+      console.log("Saved sessionId to localStorage:", response.sessionId);
+
       setQrCode(response.code);
     } catch (error) {
       console.error("Error generating QR:", error);
@@ -31,10 +37,12 @@ const QrCodeGenerator = ({ course, lecturerId }) => {
     }
   };
 
+  // Auto-refresh QR every 30s
   useEffect(() => {
     let interval;
     if (qrCode) {
       interval = setInterval(() => {
+        console.log("Refreshing QR code...");
         handleGenerateQR();
       }, 30000);
     }

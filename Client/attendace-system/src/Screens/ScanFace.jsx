@@ -22,7 +22,11 @@ const ScanFace = () => {
     const fetchStudent = async () => {
       try {
         const data = await profile();
-        setStudent(data);
+        if (data && data.existingUser) {
+          setStudent(data.existingUser);
+        } else {
+          console.error("Student profile not loaded or user not logged in");
+        }
       } catch (err) {
         console.error("Error fetching student profile:", err);
       }
@@ -74,7 +78,11 @@ const ScanFace = () => {
 
   // Front camera for face scan
   const startVideo = () => {
-    if (!code || isLockedOut) return;
+    if (!code) return alert("Scan QR code first!");
+    if (isLockedOut) return;
+
+    if (!student) return alert("Student not logged in. Please login again.");
+
     setScanning(true);
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode: "user" } })
@@ -86,7 +94,12 @@ const ScanFace = () => {
   const handlePlay = () => {
     const interval = setInterval(async () => {
       if (!videoRef.current) return;
-      const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions());
+
+      const detections = await faceapi.detectAllFaces(
+        videoRef.current,
+        new faceapi.TinyFaceDetectorOptions()
+      );
+
       const canvas = canvasRef.current;
       const displaySize = { width: videoRef.current.videoWidth, height: videoRef.current.videoHeight };
       faceapi.matchDimensions(canvas, displaySize);
@@ -96,10 +109,6 @@ const ScanFace = () => {
 
       if (detections.length > 0) {
         clearInterval(interval);
-        if (!student) {
-          console.error("Student profile not loaded. Cannot mark attendance.");
-          return;
-        }
 
         try {
           const attendanceData = { code, studentId: student._id };
@@ -113,13 +122,14 @@ const ScanFace = () => {
           setIsModalOpen(true);
         } catch (err) {
           console.error("Error marking attendance Frontend:", err);
-          setAttendanceInfo({ message: "Failed to mark attendance" });
+          setAttendanceInfo({ message: err?.response?.data?.message || "Failed to mark attendance" });
           setIsModalOpen(true);
         }
 
         setTimeout(() => setIsModalOpen(false), 4000);
       }
     }, 500);
+
     return () => clearInterval(interval);
   };
 
@@ -133,7 +143,13 @@ const ScanFace = () => {
           <div id="qr-reader" className="w-[300px]" />
         ) : scanning ? (
           <div className="relative">
-            <video ref={videoRef} autoPlay muted onPlay={handlePlay} className="rounded-lg w-[300px] h-auto" />
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              onPlay={handlePlay}
+              className="rounded-lg w-[300px] h-auto"
+            />
             <canvas ref={canvasRef} className="absolute top-0 left-0 w-[300px] h-auto" />
           </div>
         ) : (
