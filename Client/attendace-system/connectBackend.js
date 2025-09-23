@@ -321,7 +321,7 @@ export const markAttendance = async (data) => {
 
 export const generateQRCode = async (data) => {
   try {
-    const response = await apiconnect.post("/attendace/generateQR", data);
+    const response = await apiconnect.post("/attendance/generateQR", data);
     return response.data;
   } catch (error) {
     console.error("Error in generating QR code", error);
@@ -331,7 +331,7 @@ export const generateQRCode = async (data) => {
 
 export const getAttendanceBySession = async (sessionId) => {
   try {
-    const response = await apiconnect.get(`/attendace/session/${sessionId}`);
+    const response = await apiconnect.get(`/attendance/session/${sessionId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching attendance for session:", error);
