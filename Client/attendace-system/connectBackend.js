@@ -280,25 +280,29 @@ export const getLecturerCourse = async(lecturerId)=>{
 
 // attendance section
 
-export const markAttendance = async (data) => {
-  try {
-    const response = await apiconnect.post("/attendace/markAttendance", data);
-    return response.data;
-  } catch (error) {
-    console.error("Error in marking attendance", error);
-    throw error;
-  }
-}
-
-// export const generateQRCode = async (data) => {
+// export const markAttendance = async (data) => {
 //   try {
-//     const response = await apiconnect.post("/attendace/generateQR", data); 
+//     const response = await apiconnect.post("/attendace/markAttendance", data);
 //     return response.data;
 //   } catch (error) {
-//     console.error("Error in generating QR code", error);
+//     console.error("Error in marking attendance", error);
 //     throw error;
 //   }
-// };
+// }
+export const markAttendance = async ({ code, studentId }) => {
+  try {
+    const response = await apiconnect.post("/attendace/markAttendance", {
+      code,
+      studentId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error in marking attendance:", error);
+    if (error.response) throw error.response.data;
+    throw error;
+  }
+};
+
 
 // export const generateQRCode = async (data) => {
 //   try {
@@ -325,6 +329,16 @@ export const generateQRCode = async (data) => {
     return response.data;
   } catch (error) {
     console.error("Error in generating QR code", error);
+    throw error;
+  }
+};
+
+export const getAttendanceBySession = async (sessionId) => {
+  try {
+    const response = await apiconnect.get(`/attendace/session/${sessionId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching attendance for session:", error);
     throw error;
   }
 };

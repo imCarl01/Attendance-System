@@ -103,3 +103,15 @@ export const markAttendance = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getAttendaceBySession =  async (req, res) => {
+  try {
+    const records = await Attendance.find({
+      sessionId: req.params.sessionId,
+    }).populate("student", "name email");
+
+    res.json(records);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching attendance" });
+  }
+};
