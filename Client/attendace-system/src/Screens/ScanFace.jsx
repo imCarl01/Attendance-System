@@ -57,12 +57,14 @@ const ScanFace = () => {
     }, 2 * 60 * 1000); // 2 minutes for testing
   };
 
+  // ✅ QR Scanner → force BACK camera
   const startQrScanner = () => {
     if (isLockedOut) return;
 
     const qrScanner = new Html5QrcodeScanner("qr-reader", {
       fps: 10,
       qrbox: 250,
+      facingMode: { exact: "environment" }, // back camera
     });
 
     qrScanner.render(
@@ -77,12 +79,16 @@ const ScanFace = () => {
     );
   };
 
+  // ✅ Face Scan → force FRONT camera
   const startVideo = () => {
     if (!code || isLockedOut) return;
     setScanning(true);
-    navigator.mediaDevices.getUserMedia({ video: {} }).then((stream) => {
-      videoRef.current.srcObject = stream;
-    });
+    navigator.mediaDevices
+      .getUserMedia({ video: { facingMode: "user" } }) // front camera
+      .then((stream) => {
+        videoRef.current.srcObject = stream;
+      })
+      .catch((err) => console.error("Front camera error:", err));
   };
 
   const handlePlay = () => {
@@ -106,9 +112,7 @@ const ScanFace = () => {
         clearInterval(interval);
         setIsModalOpen(true);
         try {
-          const attendanceData = {
-            courseCode: code,
-          }
+          const attendanceData = { courseCode: code };
           await markAttendance(attendanceData);
           console.log("Attendance marked successfully", attendanceData);
         } catch (error) {
@@ -116,7 +120,6 @@ const ScanFace = () => {
         }
         setTimeout(() => {
           setIsModalOpen(false);
-          // optionally reset states like `code` or `scanning` here
         }, 3000); // Auto-close after 3 seconds
       }
     }, 500);
