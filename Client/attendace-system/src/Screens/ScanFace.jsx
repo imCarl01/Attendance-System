@@ -8,12 +8,14 @@ const ScanFace = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [scanning, setScanning] = useState(false);
-  const [code, setCode] = useState(""); // QR code value (class/session code)
+  const [code, setCode] = useState("");
   const [isLockedOut, setIsLockedOut] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [attendanceInfo, setAttendanceInfo] = useState(null); // ✅ store confirmation
   const lockoutTimer = useRef(null);
   const qrCodeScanner = useRef(null);
 
+  // load models once
   useEffect(() => {
     const loadModels = async () => {
       const MODEL_URL = "/models";
@@ -24,14 +26,15 @@ const ScanFace = () => {
     loadModels();
   }, []);
 
+  // lockout for 2 min (anti-cheat)
   const triggerLockout = () => {
     setIsLockedOut(true);
     lockoutTimer.current = setTimeout(() => {
       setIsLockedOut(false);
-    }, 2 * 60 * 1000); // 2 minutes lockout
+    }, 2 * 60 * 1000);
   };
 
-  // ✅ Start QR code scan with back camera
+  // ✅ QR scanner (force back camera)
   const startQrScanner = async () => {
     if (isLockedOut) return;
 
@@ -47,14 +50,11 @@ const ScanFace = () => {
 
         qrCodeScanner.current.start(
           cameraId,
-          {
-            fps: 10,
-            qrbox: 250,
-          },
+          { fps: 10, qrbox: 250 },
           (decodedText) => {
             setCode(decodedText);
             qrCodeScanner.current.stop();
-            alert("✅ QR Code scanned. Now scan your face.");
+            alert("QR Code scanned. Now scan your face.");
           },
           (errorMessage) => {
             console.warn(errorMessage);
@@ -66,11 +66,10 @@ const ScanFace = () => {
     }
   };
 
-  // ✅ Use front camera for face scan
+  // ✅ Face scan (force front camera)
   const startVideo = () => {
     if (!code || isLockedOut) return;
     setScanning(true);
-
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode: "user" } })
       .then((stream) => {
@@ -79,13 +78,16 @@ const ScanFace = () => {
       .catch((err) => console.error("Front camera error:", err));
   };
 
+  // detection loop
   const handlePlay = () => {
     const interval = setInterval(async () => {
       if (!videoRef.current) return;
+
       const detections = await faceapi.detectAllFaces(
         videoRef.current,
         new faceapi.TinyFaceDetectorOptions()
       );
+
       const canvas = canvasRef.current;
       const displaySize = {
         width: videoRef.current.videoWidth,
@@ -96,26 +98,28 @@ const ScanFace = () => {
       canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
       faceapi.draw.drawDetections(canvas, resized);
 
-      // ✅ If face detected → mark attendance
       if (detections.length > 0) {
         clearInterval(interval);
-        setIsModalOpen(true);
 
         try {
           const attendanceData = {
-            courseCode: code, // QR code value
-            timestamp: new Date(),
-            // Optional: Add studentId / name if available from auth
-            // studentId: user.id,
+            courseCode: code, // from QR
+            timestamp: new Date().toISOString(),
           };
-          await markAttendance(attendanceData);
-          console.log("✅ Attendance marked successfully:", attendanceData);
+
+          const res = await markAttendance(attendanceData);
+          setAttendanceInfo(res); // ✅ show info from backend
+          console.log("Attendance marked successfully:", res);
+
+          setIsModalOpen(true);
         } catch (error) {
-          console.error("❌ Error marking attendance:", error);
+          console.error("Error marking attendance Frontend:", error);
+          alert("Error marking attendance. Try again.");
         }
 
         setTimeout(() => {
           setIsModalOpen(false);
+          setScanning(false);
         }, 3000);
       }
     }, 500);
@@ -129,7 +133,7 @@ const ScanFace = () => {
         <h1 className="text-3xl font-bold text-[#00294f]">Mark Attendance</h1>
         <p>Please scan QR code, then align face with frame.</p>
 
-        {/* QR Reader / Video / Animation */}
+        {/* QR Reader or Face Scanner */}
         {!code ? (
           <div id="qr-reader" className="w-[300px]" />
         ) : scanning ? (
@@ -172,13 +176,21 @@ const ScanFace = () => {
         )}
       </section>
 
-      {/* Modal ✅ Attendance Success */}
+      {/* Success Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-40 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm">
             <div className="text-green-500 text-5xl mb-2">✔️</div>
             <h2 className="text-xl font-semibold mb-2">Attendance Marked</h2>
-            <p className="text-gray-700">Successfully recorded</p>
+            <p className="text-gray-700">
+              {attendanceInfo?.student?.name
+                ? `${attendanceInfo.student.name} marked present`
+                : "Successfully recorded"}
+            </p>
+            <p className="text-sm text-gray-500 mt-1">
+              Course: {code} <br />
+              Time: {new Date().toLocaleTimeString()}
+            </p>
           </div>
         </div>
       )}

@@ -104,14 +104,17 @@ export const markAttendance = async (req, res) => {
   }
 };
 
-export const getAttendaceBySession =  async (req, res) => {
+// Get all attendance for a session
+export const getSessionAttendance = async (req, res) => {
   try {
-    const records = await Attendance.find({
-      sessionId: req.params.sessionId,
-    }).populate("student", "name email");
+    const { sessionId } = req.params;
 
-    res.json(records);
+    const attendance = await Attendance.find({ sessionId })
+      .populate("student", "name email") // show student details
+      .populate("courseCode", "name code"); // if course is a ref
+
+    res.json(attendance);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching attendance" });
+    res.status(500).json({ message: "Error fetching attendance", error: err.message });
   }
 };
