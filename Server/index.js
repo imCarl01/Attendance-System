@@ -7,7 +7,7 @@ import cors from 'cors';
 import adminRoutes from "./Routes/admin.routes.js"
 import courseRoutes from "./Routes/course.route.js"
 import lecturerRoutes from  "./Routes/lecturer.routes.js"
-import attendanceRoutes from "./Routes/attendace.routes.js"
+import attendanceRoutes from "./Routes/attendance.routes.js"
 dotenv.config();
 
 const app = express();
