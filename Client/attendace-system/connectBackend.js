@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const apiconnect = axios.create({
-  baseURL: "http://localhost:5000/api",
+  // baseURL: "http://localhost:5000/api",
+  baseURL: "https://attendance-system-w2la.onrender.com/api",
   timeout: 10000, // 10 seconds timeout
   withCredentials: true,
 });
